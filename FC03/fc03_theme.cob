@@ -171,6 +171,7 @@
        *>
             NOT   AT   END
                 MOVE   IN01-MISEBAN   TO   KY01-MISEBAN
+                ADD 1 TO WRK-IN-COUNT
             END-READ.
        *>
        ZYUTYU-FILE-READ-PROC-EXIT.
