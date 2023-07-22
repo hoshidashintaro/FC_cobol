@@ -40,7 +40,7 @@
        FD   OT01-ZYUTYU-FILE.
        01   OT01-RECODE.
             03   OT01-MISEBAN            PIC X(003).
-            *>03   OT01-TYUMON-BANGOU      PIC 9(005).
+            03   OT01-TYUMON-BANGOU      PIC 9(005).
        *>----------------------------------------------------------------------------
        *>作業領域の定義
        *>----------------------------------------------------------------------------
@@ -136,17 +136,21 @@
        *>  受注ファイルの読み込み
            PERFORM ZYUTYU-FILE-READ-PROC.
        *>
-           IF   KY01-MISEBAN  =  "T01"   THEN
+           PERFORM UNTIL IN-FILE-STATUS NOT = "00"
        *>
-               PERFORM   WRITE-PROC
+           IF     KY01-MISEBAN  =  "T01"   THEN
+       *>
+                  PERFORM   WRITE-PROC
+       *>
+                  PERFORM   ZYUTYU-FILE-READ-PROC
+       *>
+           ELSE   IF   KY01-MISEBAN NOT  =  "T01"   THEN
        *>
                PERFORM   ZYUTYU-FILE-READ-PROC
        *>
-           ELSE   IF   KY01-MISEBAN NOT =  "T01"   THEN
+           END-IF
        *>
-               PERFORM   ZYUTYU-FILE-READ-PROC
-       *>
-           END-IF.
+           END-PERFORM.
        *>
        MAIN-PROC-EXIT.
        *>
@@ -157,11 +161,12 @@
        WRITE-PROC                         SECTION.
        *>
        *>
-           MOVE    IN01-MISEBAN   TO   OT01-MISEBAN.
+           MOVE    IN01-MISEBAN         TO   OT01-MISEBAN.
+           MOVE    IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU.
        *>
            WRITE   OT01-RECODE.
        *>
-           ADD   1                TO   WRK-OUT-COUNT.
+           ADD   1                      TO   WRK-OUT-COUNT.
        *>
        WRITE-PROC-EXIT.
        *>
@@ -169,19 +174,17 @@
        *>----------------------------------------------------------------------------
        *>受注ファイルの読み込み
        *>----------------------------------------------------------------------------
-       ZYUTYU-FILE-READ-PROC SECTION.
+       ZYUTYU-FILE-READ-PROC              SECTION.
        *>
-       PERFORM UNTIL IN-FILE-STATUS NOT = "00"
            READ   IN01-ZYUTYU-FILE
              AT   END
-                  MOVE   9   TO   KY01-STATUS
+                  MOVE   9              TO   KY01-STATUS
                   DISPLAY "READ END"
        *>
             NOT   AT   END
-                MOVE   IN01-MISEBAN   TO   KY01-MISEBAN
-                ADD 1 TO WRK-IN-COUNT
-            END-READ
-       END-PERFORM.
+                  MOVE   IN01-MISEBAN   TO   KY01-MISEBAN
+                  ADD   1               TO   WRK-IN-COUNT
+           END-READ.
        *>
        ZYUTYU-FILE-READ-PROC-EXIT.
        *>
