@@ -47,6 +47,7 @@
        WORKING-STORAGE                    SECTION.
        *>
        01   WRK-WORK-AREA.
+            03   WRK-IN-COUNT                 PIC 9(006).
             03   WRK-OUT-COUNT                PIC 9(006).
             03   WRK-MISEBAN                  PIC X(003).
        *>
