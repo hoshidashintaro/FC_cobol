@@ -166,7 +166,6 @@
        *>
            READ   IN01-ZYUTYU-FILE
              AT   END
-                  *>MOVE   "END"   TO   WRK-AT-END
                   MOVE   9   TO   KY01-STATUS
        *>
             NOT   AT   END
