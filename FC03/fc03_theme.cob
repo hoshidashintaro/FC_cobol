@@ -171,6 +171,7 @@
        *>----------------------------------------------------------------------------
        ZYUTYU-FILE-READ-PROC SECTION.
        *>
+       PERFORM UNTIL IN-FILE-STATUS NOT = "00"
            READ   IN01-ZYUTYU-FILE
              AT   END
                   MOVE   9   TO   KY01-STATUS
@@ -179,7 +180,8 @@
             NOT   AT   END
                 MOVE   IN01-MISEBAN   TO   KY01-MISEBAN
                 ADD 1 TO WRK-IN-COUNT
-            END-READ.
+            END-READ
+       END-PERFORM.
        *>
        ZYUTYU-FILE-READ-PROC-EXIT.
        *>
