@@ -84,6 +84,9 @@
        *>----------------------------------------------------------------------------
        INIT-PROC                         SECTION.
        *>
+       *>  ファイルステータスの初期化
+           MOVE   SPACE       TO   IN-FILE-STATUS.
+       *>
        *>  作業領域の初期化
            MOVE   ZERO       TO   WRK-IN-COUNT.
            MOVE   ZERO       TO   WRK-OUT-COUNT.
