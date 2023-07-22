@@ -94,9 +94,6 @@
        *>  マッチングキーの初期化（ステータス）
            MOVE   ZERO       TO KY01-STATUS.
        *>
-       *>受注ファイルの読み込み
-           PERFORM ZYUTYU-FILE-READ-PROC.
-       *>
        INIT-PROC-EXIT.
        *>
            EXIT.
@@ -128,6 +125,9 @@
        *>  ファイルのオープン
            OPEN   INPUT    IN01-ZYUTYU-FILE
                   OUTPUT   OT01-ZYUTYU-FILE.
+       *>
+       *>  受注ファイルの読み込み
+           PERFORM ZYUTYU-FILE-READ-PROC.
        *>
            IF   KY01-MISEBAN  =  "T01"   THEN
        *>
