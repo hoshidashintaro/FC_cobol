@@ -75,8 +75,6 @@
        *>
            PERFORM   MAIN-PROC.
        *>
-           PERFORM   INIT-PROC.
-       *>
            PERFORM   TERM-PROC.
        *>
            STOP RUN.
@@ -126,6 +124,9 @@
        *>----------------------------------------------------------------------------
        MAIN-PROC                          SECTION.
        *>
+           PERFORM   INIT-PROC.
+       *>
+
            IF   KY01-MISEBAN  =  "T01"   THEN
        *>
                PERFORM   WRITE-PROC
