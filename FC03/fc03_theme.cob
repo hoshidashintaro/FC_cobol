@@ -73,9 +73,9 @@
        *>----------------------------------------------------------------------------
        PROCEDURE                         DIVISION.
        *>
-           PERFORM   INIT-PROC.
+           PERFORM   MAIN-PROC.
        *>
-           *>PERFORM   MAIN-PROC  UNTIL   WRK-AT-END   =   CST-END.
+           PERFORM   INIT-PROC.
        *>
            PERFORM   TERM-PROC.
        *>
