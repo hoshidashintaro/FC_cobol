@@ -167,6 +167,7 @@
            READ   IN01-ZYUTYU-FILE
              AT   END
                   MOVE   9   TO   KY01-STATUS
+                  DISPLAY "READ END"
        *>
             NOT   AT   END
                 MOVE   IN01-MISEBAN   TO   KY01-MISEBAN
