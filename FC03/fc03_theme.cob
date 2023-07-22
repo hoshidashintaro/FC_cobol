@@ -84,8 +84,6 @@
        INIT-PROC                         SECTION.
        *>
        *>  作業領域の初期化
-           *>MOVE   SPACE      TO   WRK-AT-END.
-       *>
            MOVE   ZERO       TO   WRK-OUT-COUNT.
        *>
        *>  マッチングキーの初期化（ステータス）
