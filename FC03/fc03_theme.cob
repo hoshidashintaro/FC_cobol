@@ -61,13 +61,18 @@
             03   FILLER                       PIC X(040)
                           VALUE "SAMPLE03の出力結果".
        *>
-       *>--処理が終了した際に出力件数を表示する--
+       *>--処理が終了した際に入力件数を表示する--
        01   MS2-MESSAGE-AREA.
             03   FILLER                       PIC X(030)
-                                 VALUE "出力ファイル件数：".
-            *>--ZZZ,ZZ9：整数部3けた（ゼロサプレス）＋カンマ＋整数部3けた（ゼロサプレス）--
-            *>--ゼロサプレス：数値としての本来の表示に直す時に使う--
+                                 VALUE "入力ファイル件数：".
             03   MSG2-COUNT                   PIC ZZZ,ZZ9.
+       *>
+       *>--処理が終了した際に出力件数を表示する--
+       01   MS3-MESSAGE-AREA.
+            03   FILLER                       PIC X(030)
+                                 VALUE "出力ファイル件数：".
+            03   MSG3-COUNT                   PIC ZZZ,ZZ9.
+       *>
        01   IN-FILE-STATUS PIC XX.
        *>----------------------------------------------------------------------------
        *>手続き部
@@ -107,10 +112,12 @@
                    OT01-ZYUTYU-FILE.
        *>
        *>入出力件数の表示
-           MOVE   WRK-OUT-COUNT TO MSG2-COUNT.
+           MOVE   WRK-IN-COUNT  TO MSG2-COUNT.
+           MOVE   WRK-OUT-COUNT TO MSG3-COUNT.
        *>
            DISPLAY   MS1-MESSAGE-AREA UPON CONSOLE.
            DISPLAY   MS2-MESSAGE-AREA UPON CONSOLE.
+           DISPLAY   MS3-MESSAGE-AREA UPON CONSOLE.
        *>
        TERM-PROC-EXIT.
        *>
