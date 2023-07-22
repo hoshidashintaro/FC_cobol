@@ -46,14 +46,7 @@
        *>----------------------------------------------------------------------------
        WORKING-STORAGE                    SECTION.
        *>
-       *>--手続き部で「MAIN-PROC」を終了させる際の定数となる--
-       *>77   CST-END                           PIC X(004) VALUE "END ".
-       *>
-       *>
        01   WRK-WORK-AREA.
-            *>--手続き部で「MAIN-PROC」を終了させる際の変数となる--
-            *>03   WRK-AT-END                   PIC X(004).
-            *>--書き込み件数をカウントする変数--
             03   WRK-OUT-COUNT                PIC 9(006).
             03   WRK-MISEBAN                  PIC X(003).
        *>
