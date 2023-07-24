@@ -99,10 +99,12 @@
        *>
        *>    入力ファイルの読み込み
              PERFORM   IN01-ZYUTYU-FILE-READ-PROC.
+                    DISPLAY"集計前IN01-BUNRUI-CODE:"IN01-BUNRUI-CODE.
+                    DISPLAY"集計前IN01-SHOHIN-NO:"IN01-SHOHIN-NO.
        *>
        *>    集計処理の呼び出し
-             PERFORM   SUMMARY-MAIN-PROC
-                                       UNTIL   WRK-AT-END  =  CST-END.
+       *>      PERFORM   SUMMARY-MAIN-PROC
+       *>                                UNTIL   WRK-AT-END  =  CST-END.
        MAIN-PROC-EXIT.
        *>
            EXIT.
@@ -137,7 +139,6 @@
        *>-----------------------------------------------------------------------
        IN01-ZYUTYU-FILE-READ-PROC                          SECTION.
        *>
-       *>PERFORM   UNTIL WRK-AT-END = CST-END
            READ IN01-ZYUTYU-FILE
                 AT     END
                 MOVE      "END"          TO   WRK-AT-END
@@ -146,9 +147,15 @@
                NOT   AT   END
                MOVE   IN01-BUNRUI-CODE   TO   KEY-BUNRUI-CODE
                MOVE   IN01-SHOHIN-NO     TO   KEY-SHOHIN-NO
+                    DISPLAY"読むIN01-BUNRUI-CODE:"IN01-BUNRUI-CODE
+                    DISPLAY"読むIN01-SHOHIN-NO:"IN01-SHOHIN-NO
            END-READ.
-       *>END-PERFORM.
+                    DISPLAY"読む後IN01-BUNRUI-CODE:"IN01-BUNRUI-CODE.
+                    DISPLAY"読む後IN01-SHOHIN-NO:"IN01-SHOHIN-NO.
        *>
+             PERFORM   SUMMARY-MAIN-PROC
+                                       UNTIL   WRK-AT-END  =  CST-END.
+
        IN01-ZYUTYU-FILE-READ-PROC-EXIT.
        *>
            EXIT.
@@ -157,9 +164,15 @@
        *>-----------------------------------------------------------------------
        SUMMARY-MAIN-PROC                          SECTION.
        *>
+       PERFORM   UNTIL WRK-AT-END = CST-END
        *>  集計キー変わりを判定
            IF  IN01-BUNRUI-CODE   NOT =   KEY-BUNRUI-CODE   OR
                IN01-SHOHIN-NO     NOT =   KEY-SHOHIN-NO     THEN
+          DISPLAY"集計キー判定IN01-BUNRUI-CODE:"IN01-BUNRUI-CODE
+          DISPLAY"集計キー判定IN01-SHOHIN-NO:"IN01-SHOHIN-NO
+          DISPLAY"集計キー判定KEY-BUNRUI-CODE:"KEY-BUNRUI-CODE
+          DISPLAY"集計キー判定KEY-SHOHIN-NO:"KEY-SHOHIN-NO
+
        *>
        *>      ファイルの書き込み処理
                PERFORM   WRITE-PROC
@@ -170,14 +183,15 @@
        *>      現レコードの集計キーの保存
                MOVE   IN01-BUNRUI-CODE   TO   KEY-BUNRUI-CODE
                MOVE   IN01-SHOHIN-NO     TO   KEY-SHOHIN-NO
-           END-IF.
+           END-IF
        *>
        *>  数量、売上金額の集計
-           ADD IN01-TYUMON-SU TO WRK-TYUMON-SU-TOTAL.
+           ADD IN01-TYUMON-SU TO WRK-TYUMON-SU-TOTAL
        *>
        *>  入力ファイルの読み込み
-           PERFORM   IN01-ZYUTYU-FILE-READ-PROC.
+           PERFORM   IN01-ZYUTYU-FILE-READ-PROC
        *>
+       END-PERFORM.
        SUMMARY-MAIN-PROC-EXIT.
        *>
            EXIT.
