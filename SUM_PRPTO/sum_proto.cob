@@ -75,6 +75,8 @@
              MOVE   SPACE   TO   IN-FILE-STATUS.
              MOVE   ZERO    TO   WRK-TYUMON-SU.
              MOVE   ZERO    TO   WRK-TYUMON-SU-TOTAL.
+             MOVE   SPACE   TO   KEY-BUNRUI-CODE.
+             MOVE   ZERO    TO   KEY-SHOHIN-NO.
        *>
        *>    ファイルのオープン
              OPEN   INPUT    IN01-ZYUTYU-FILE
