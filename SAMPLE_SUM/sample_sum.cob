@@ -55,44 +55,27 @@
        01   WK-SUM-AREA.
             03   WK-SUM-SUJI    PIC 999.
        *>-----------------------------------------------------------------------
-       *>初期処理
+       *>初期処理（ファイルのオープン）
        *>-----------------------------------------------------------------------
-       *>INIT-PROC                          SECTION.
-       *>
              MOVE   SPACE   TO   IN-FILE-STATUS.
-             MOVE   ZERO    TO   WRK-TYUMON-SU.
-             MOVE   ZERO    TO   WRK-TYUMON-SU-TOTAL.
+             MOVE   SPACE   TO   WK-KEY-OLD.
+             MOVE   SPACE   TO   WK-KEY-NEW.
        *>
        *>    ファイルのオープン
              OPEN   INPUT    IN01-ZYUTYU-FILE
                     OUTPUT   OT01-TYUMON-SU-FILE.
-
-       *>INIT-PROC-EXIT.
        *>
-       *>    EXIT.
-       *>-----------------------------------------------------------------------
-       *>初期処理（ファイル読み込み処理）
-       *>-----------------------------------------------------------------------
-       *>IN01-ZYUTYU-FILE-READ-PROC                          SECTION.
-       *>
-           READ IN01-ZYUTYU-FILE
+           READ IN01-FILE
                 AT     END
                 DISPLAY   "READ END"
            *>
                NOT   AT   END
-               MOVE   IN01-BUNRUI-CODE   TO   KEY-BUNRUI-CODE
-               MOVE   IN01-SHOHIN-NO     TO   KEY-SHOHIN-NO
-           *>DISPLAY"読むIN01-BUNRUI-CODE:"IN01-BUNRUI-CODE
-           *>DISPLAY"読むIN01-SHOHIN-NO:"IN01-SHOHIN-NO
+               MOVE   IN01-YEAR   TO   WK-KEY-NOW
+                                       WK-KEY-OLD
+               MOVE   IN01-SUJI   TO   WK-SUM-SUJI
            END-READ.
-       *>
-       *>      PERFORM   SUMMARY-MAIN-PROC
-       *>                                UNTIL   WRK-AT-END  =  CST-END.
-       *>IN01-ZYUTYU-FILE-READ-PROC-EXIT.
-       *>
-       *>    EXIT.
        *>-----------------------------------------------------------------------
-      *>主処理
+       *>主処理
        *>-----------------------------------------------------------------------
        PERFORM UNTIL IN-FILE-STATUS NOT = "00"
        READ IN01-ZYUTYU-FILE
