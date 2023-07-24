@@ -110,7 +110,37 @@
       *>主処理
        *>-----------------------------------------------------------------------
        PERFORM UNTIL IN-FILE-STATUS NOT = "00"
-       READ IN01-ZYUTYU-FILE
-       AT END
-           DISPLAY "READ END"
-       NOT AT END
+       *>
+           READ   IN01-ZYUTYU-FILE
+               AT   END
+               DISPLAY "READ END"
+               WRITE OT01-RECODE
+       *>
+               NOT   AT   END
+               MOVE   IN01-BUNRUI-CODE   TO   KEY-BUNRUI-CODE
+               MOVE   IN01-SHOHIN-NO     TO   KEY-SHOHIN-NO
+       *>
+       *>      キーブレイク
+               IF   IN01-BUNRUI-CODE   =   KEY-BUNRUI-CODE   AND
+                    IN01-SHOHIN-NO     =   KEY-SHOHIN-NO     THEN
+       *>
+       *>      データ集計
+               COMPUTE   WRK-TYUMON-SU-TOTAL =
+                            WRK-TYUMON-SU-TOTAL + IN01-TYUMON-SU
+       *>
+       *>      ファイル出力
+               ELSE
+                   MOVE   KEY-BUNRUI-CODE       TO   OT01-BUNRUI-CODE
+                   MOVE   KEY-SHOHIN-NO         TO   OT01-SHOHIN-NO
+                   MOVE   WRK-TYUMON-SU-TOTAL   TO   OT01-TYUMON-SU
+                   WRITE   OT01-RECODE
+       *>
+       *>      次のキーをセット
+                   MOVE   IN01-BUNRUI-CODE   TO   KEY-BUNRUI-CODE
+                   MOVE   IN01-SHOHIN-NO     TO   KEY-SHOHIN-NO
+                   MOVE   IN01-TYUMON-SU     TO   WRK-TYUMON-SU
+                END-IF
+           END-READ
+       END-PERFORM.
+       *>
+       *>
