@@ -101,8 +101,14 @@
        *>
        *>      PERFORM   SUMMARY-MAIN-PROC
        *>                                UNTIL   WRK-AT-END  =  CST-END.
-
        *>IN01-ZYUTYU-FILE-READ-PROC-EXIT.
        *>
        *>    EXIT.
        *>-----------------------------------------------------------------------
+      *>主処理
+       *>-----------------------------------------------------------------------
+       PERFORM UNTIL IN-FILE-STATUS NOT = "00"
+       READ IN01-ZYUTYU-FILE
+       AT END
+           DISPLAY "READ END"
+       NOT AT END
