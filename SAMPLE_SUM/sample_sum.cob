@@ -14,14 +14,14 @@
        *>-----------------------------------------------------------------------
        *>入力ファイル
        *>-----------------------------------------------------------------------
-       SELECT    IN01-ZYUTYU-FILE      ASSIGN       TO   "IN01.txt"
-                                       ORGANIZATION IS LINE SEQUENTIAL
-                                       FILE STATUS  IS IN-FILE-STATUS.
+       SELECT    IN01-FILE   ASSIGN       TO   "IN01.txt"
+                             ORGANIZATION IS LINE SEQUENTIAL
+                             FILE STATUS  IS IN-FILE-STATUS.
        *>-----------------------------------------------------------------------
        *>出力ファイル
        *>-----------------------------------------------------------------------
-       SELECT    OT01-TYUMON-SU-FILE   ASSIGN       TO   "OT01.txt"
-                                       ORGANIZATION IS LINE SEQUENTIAL.
+       SELECT    OT01-FILE   ASSIGN       TO   "OT01.txt"
+                             ORGANIZATION IS LINE SEQUENTIAL.
        *>-----------------------------------------------------------------------
        *>データ部
        *>-----------------------------------------------------------------------
