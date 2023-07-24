@@ -78,7 +78,33 @@
        *>主処理
        *>-----------------------------------------------------------------------
        PERFORM UNTIL IN-FILE-STATUS NOT = "00"
-       READ IN01-ZYUTYU-FILE
-       AT END
-           DISPLAY "READ END"
-       NOT AT END
+       *>
+           READ   IN01-ZYUTYU-FILE
+               AT   END
+               DISPLAY   "READ END"
+               MOVE   WK-KEY-OLD    TO   OT01-YEAR
+               MOVE   WK-SUM-SUJI   TO   OT01-SUJI
+               WRITE   OT01-RECODE
+       *>
+               NOT   AT   END
+               MOVE   IN01-YEAR     TO   WK-KEY-NEW
+       *>
+       *>      キーブレイク
+               IF   WK-KEY-NEW  =  WK-KEY-OLD
+       *>
+       *>      データ集計
+               THEN
+                   COMPUTE   WK-SUM-SUJI = WK-SUM-SUJI + IN01-SUJI
+       *>
+       *>      ファイル出力
+               ELSE
+                   MOVE   WK-KEY-OLD    TO   OT01-YEAR
+                   MOVE   WK-SUM-SUJI   TO   OT01-SUJI
+                   WRITE   OT01-RECODE
+       *>
+       *>次のキーをセット
+                   MOVE WK-KEY-NEW TO WK-KEY-OLD
+                   MOVE IN01-SUJI TO WK-KEY-SUJI
+               END-IF
+           END-READ
+       END-PERFORM.
