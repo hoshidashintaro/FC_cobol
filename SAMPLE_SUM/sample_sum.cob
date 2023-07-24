@@ -75,9 +75,9 @@
                MOVE   IN01-YEAR   TO   WK-KEY-NEW
                                        WK-KEY-OLD
                MOVE   IN01-SUJI   TO   WK-SUM-SUJI
-               DISPLAY"初期WK-KEY-NEW:"WK-KEY-NEW
-               DISPLAY"初期WK-KEY-OLD:"WK-KEY-OLD
-               DISPLAY"初期WK-SUM-SUJI:"WK-SUM-SUJI
+               DISPLAY"NOT AT初期WK-KEY-NEW:"WK-KEY-NEW
+               DISPLAY"NOT AT初期WK-KEY-OLD:"WK-KEY-OLD
+               DISPLAY"NOT AT初期WK-SUM-SUJI:"WK-SUM-SUJI
            END-READ.
        *>-----------------------------------------------------------------------
        *>主処理
@@ -105,6 +105,8 @@
                DISPLAY"キーブレイクWK-KEY-NEW:"WK-KEY-NEW
                DISPLAY"キーブレイクWK-KEY-OLD:"WK-KEY-OLD
                    COMPUTE   WK-SUM-SUJI = WK-SUM-SUJI + IN01-SUJI
+               DISPLAY"キーブレイクWK-SUM-SUJI:"WK-SUM-SUJI
+               DISPLAY"キーブレイクIN01-SUJI:"IN01-SUJI
        *>
        *>      ファイル出力
                ELSE
@@ -113,6 +115,7 @@
                    DISPLAY"ファイル出力OT01-YEAR:"OT01-YEAR
                    DISPLAY"ファイル出力OT01-SUJI:"OT01-SUJI
                    WRITE   OT01-RECODE
+                   DISPLAY"ELSE WRITE OT01-RECODE:"OT01-RECODE
        *>
        *>次のキーをセット
                    MOVE WK-KEY-NEW TO WK-KEY-OLD

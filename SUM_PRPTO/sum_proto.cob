@@ -120,7 +120,6 @@
                MOVE   KEY-BUNRUI-CODE   TO   OT01-BUNRUI-CODE
                MOVE   KEY-SHOHIN-NO     TO   OT01-SHOHIN-NO
                MOVE   WRK-TYUMON-SU-TOTAL   TO   OT01-TYUMON-SU
-
                WRITE OT01-RECODE
       *>
                NOT   AT   END
@@ -158,9 +157,9 @@
                    MOVE   KEY-SHOHIN-NO         TO   OT01-SHOHIN-NO
                    MOVE   WRK-TYUMON-SU-TOTAL   TO   OT01-TYUMON-SU
                    WRITE   OT01-RECODE
-         DISPLAY"ファイル出力KEY-BUNRUI-CODE:"KEY-BUNRUI-CODE
-         DISPLAY"ファイル出力KEY-SHOHIN-NO:"KEY-SHOHIN-NO
-         DISPLAY"出力WRK-TYUMON-SU-TOTAL:"WRK-TYUMON-SU-TOTAL
+            DISPLAY"出力KEY-BUNRUI-CODE:"KEY-BUNRUI-CODE
+            DISPLAY"出力KEY-SHOHIN-NO:"KEY-SHOHIN-NO
+            DISPLAY"出力WRK-TYUMON-SU-TOTAL:"WRK-TYUMON-SU-TOTAL
       *>
       *>      次のキーをセット
                    MOVE   IN01-BUNRUI-CODE   TO   KEY-BUNRUI-CODE
