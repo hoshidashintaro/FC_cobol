@@ -54,7 +54,7 @@
        *>-----------------------------------------------------------------------
        WORKING-STORAGE                    SECTION.
        *>
-       01   IN-FILE-STATUS PIC XX.
+       01   IN-FILE-STATUS                    PIC XX.
        *>
        01   WRK-WORK-AREA.
             03   WRK-TYUMON-SU-TOTAL          PIC 9(004).
@@ -67,3 +67,42 @@
        *>
        *>01   MS1-MESSAGE-AREA.
        *>     03   FILLER                       PIC X(018) VALUE "正常終了".
+       *>-----------------------------------------------------------------------
+       *>初期処理
+       *>-----------------------------------------------------------------------
+       *>INIT-PROC                          SECTION.
+       *>
+             MOVE   SPACE   TO   IN-FILE-STATUS.
+             MOVE   ZERO    TO   WRK-TYUMON-SU.
+             MOVE   ZERO    TO   WRK-TYUMON-SU-TOTAL.
+       *>
+       *>    ファイルのオープン
+             OPEN   INPUT    IN01-ZYUTYU-FILE
+                    OUTPUT   OT01-TYUMON-SU-FILE.
+
+       *>INIT-PROC-EXIT.
+       *>
+       *>    EXIT.
+       *>-----------------------------------------------------------------------
+       *>初期処理（ファイル読み込み処理）
+       *>-----------------------------------------------------------------------
+       *>IN01-ZYUTYU-FILE-READ-PROC                          SECTION.
+       *>
+           READ IN01-ZYUTYU-FILE
+                AT     END
+                DISPLAY   "READ END"
+           *>
+               NOT   AT   END
+               MOVE   IN01-BUNRUI-CODE   TO   KEY-BUNRUI-CODE
+               MOVE   IN01-SHOHIN-NO     TO   KEY-SHOHIN-NO
+           *>DISPLAY"読むIN01-BUNRUI-CODE:"IN01-BUNRUI-CODE
+           *>DISPLAY"読むIN01-SHOHIN-NO:"IN01-SHOHIN-NO
+           END-READ.
+       *>
+       *>      PERFORM   SUMMARY-MAIN-PROC
+       *>                                UNTIL   WRK-AT-END  =  CST-END.
+
+       *>IN01-ZYUTYU-FILE-READ-PROC-EXIT.
+       *>
+       *>    EXIT.
+       *>-----------------------------------------------------------------------
