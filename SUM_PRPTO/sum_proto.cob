@@ -49,3 +49,21 @@
                       07   OT01-SHOHIN-NO        PIC 9(004).
             03   OT01-TYUMON-ZYOHOU.
                  05   OT01-TYUMON-SU             PIC 9(004).
+       *>-----------------------------------------------------------------------
+       *>作業領域の定義
+       *>-----------------------------------------------------------------------
+       WORKING-STORAGE                    SECTION.
+       *>
+       01   IN-FILE-STATUS PIC XX.
+       *>
+       01   WRK-WORK-AREA.
+            03   WRK-TYUMON-SU-TOTAL          PIC 9(004).
+            03   WRK-TYUMON-SU                PIC 9(003).
+       *>
+       *>前レコードの集計キー保存用
+       01   KEY-SUMMARY.
+            03   KEY-BUNRUI-CODE              PIC X(002).
+            03   KEY-SHOHIN-NO                PIC 9(004).
+       *>
+       *>01   MS1-MESSAGE-AREA.
+       *>     03   FILLER                       PIC X(018) VALUE "正常終了".
