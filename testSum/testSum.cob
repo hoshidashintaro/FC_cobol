@@ -89,8 +89,9 @@
                DISPLAY   "READ END"
                MOVE   WK-KEY-OLD         TO   OT01-BUNRUI
                MOVE   WK-SUM-TYUMON-SU   TO   OT01-TYUMON-SU
-               DISPLAY"読み込み終了 AT END OT01-BUNRUI:"OT01-BUNRUI
-               DISPLAY"読み込み終了 AT END OT01-TYUMON-SU:"OT01-TYUMON-SU
+          DISPLAY"読み込み終了 AT END OT01-BUNRUI:"OT01-BUNRUI
+          DISPLAY"読み込み終了 AT END OT01-TYUMON-SU:"
+          OT01-TYUMON-SU
                WRITE   OT01-RECODE
        *>
                NOT   AT   END
@@ -106,15 +107,17 @@
                DISPLAY"キーブレイクWK-KEY-OLD:"WK-KEY-OLD
                    COMPUTE   WK-SUM-TYUMON-SU =
                                     WK-SUM-TYUMON-SU + IN01-TYUMON-SU
-               DISPLAY"キーブレイクWK-SUM-TYUMON-SU:"WK-SUM-TYUMON-SU
-               DISPLAY"キーブレイクIN01-TYUMON-SU:"IN01-TYUMON-SU
+               DISPLAY"キーブレイクWK-SUM-TYUMON-SU:"
+               WK-SUM-TYUMON-SU
+               DISPLAY"キーブレイクIN01-TYUMON-SU:"
+               IN01-TYUMON-SU
        *>
        *>      ファイル出力
                ELSE
-                   MOVE   WK-KEY-OLD    TO   OT01-BUNRUI
-                   MOVE   WK-SUM-SUJI   TO   OT01-TYUMON-SU
-                   DISPLAY"ファイル出力OT01-BUNRUI:"OT01-BUNRUI
-                   DISPLAY"ファイル出力OT01-TYUMON-SU:"OT01-TYUMON-SU
+                   MOVE   WK-KEY-OLD         TO   OT01-BUNRUI
+                   MOVE   WK-SUM-TYUMON-SU   TO   OT01-TYUMON-SU
+              DISPLAY"ファイル出力OT01-BUNRUI:"OT01-BUNRUI
+              DISPLAY"ファイル出力OT01-TYUMON-SU:"OT01-TYUMON-SU
                    WRITE   OT01-RECODE
                    DISPLAY"ELSE WRITE OT01-RECODE:"OT01-RECODE
        *>
