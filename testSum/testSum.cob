@@ -87,15 +87,15 @@
            READ   IN01-FILE
                AT   END
                DISPLAY   "READ END"
-               MOVE   WK-KEY-OLD    TO   OT01-YEAR
-               MOVE   WK-SUM-SUJI   TO   OT01-SUJI
-               DISPLAY"読み込み終了 AT END OT01-YEAR:"OT01-YEAR
-               DISPLAY"読み込み終了 AT END OT01-SUJI:"OT01-SUJI
+               MOVE   WK-KEY-OLD         TO   OT01-BUNRUI
+               MOVE   WK-SUM-TYUMON-SU   TO   OT01-TYUMON-SU
+               DISPLAY"読み込み終了 AT END OT01-BUNRUI:"OT01-BUNRUI
+               DISPLAY"読み込み終了 AT END OT01-TYUMON-SU:"OT01-TYUMON-SU
                WRITE   OT01-RECODE
        *>
                NOT   AT   END
-               MOVE   IN01-YEAR     TO   WK-KEY-NEW
-               DISPLAY"NOT AT END IN01-YEAR:"IN01-YEAR
+               MOVE   IN01-BUNRUI     TO   WK-KEY-NEW
+               DISPLAY"NOT AT END IN01-BUNRUI:"IN01-BUNRUI
        *>
        *>      キーブレイク
                IF   WK-KEY-NEW  =  WK-KEY-OLD
@@ -104,22 +104,23 @@
                THEN
                DISPLAY"キーブレイクWK-KEY-NEW:"WK-KEY-NEW
                DISPLAY"キーブレイクWK-KEY-OLD:"WK-KEY-OLD
-                   COMPUTE   WK-SUM-SUJI = WK-SUM-SUJI + IN01-SUJI
-               DISPLAY"キーブレイクWK-SUM-SUJI:"WK-SUM-SUJI
-               DISPLAY"キーブレイクIN01-SUJI:"IN01-SUJI
+                   COMPUTE   WK-SUM-TYUMON-SU =
+                                    WK-SUM-TYUMON-SU + IN01-TYUMON-SU
+               DISPLAY"キーブレイクWK-SUM-TYUMON-SU:"WK-SUM-TYUMON-SU
+               DISPLAY"キーブレイクIN01-TYUMON-SU:"IN01-TYUMON-SU
        *>
        *>      ファイル出力
                ELSE
-                   MOVE   WK-KEY-OLD    TO   OT01-YEAR
-                   MOVE   WK-SUM-SUJI   TO   OT01-SUJI
-                   DISPLAY"ファイル出力OT01-YEAR:"OT01-YEAR
-                   DISPLAY"ファイル出力OT01-SUJI:"OT01-SUJI
+                   MOVE   WK-KEY-OLD    TO   OT01-BUNRUI
+                   MOVE   WK-SUM-SUJI   TO   OT01-TYUMON-SU
+                   DISPLAY"ファイル出力OT01-BUNRUI:"OT01-BUNRUI
+                   DISPLAY"ファイル出力OT01-TYUMON-SU:"OT01-TYUMON-SU
                    WRITE   OT01-RECODE
                    DISPLAY"ELSE WRITE OT01-RECODE:"OT01-RECODE
        *>
        *>次のキーをセット
                    MOVE WK-KEY-NEW TO WK-KEY-OLD
-                   MOVE IN01-SUJI TO WK-SUM-SUJI
+                   MOVE IN01-TYUMON-SU TO WK-SUM-TYUMON-SU
                    DISPLAY"次キーセットWK-KEY-NEW:"WK-KEY-NEW
                    DISPLAY"次キーセットWK-KEY-OLD:"WK-KEY-OLD
                END-IF
