@@ -56,9 +56,11 @@
        *>
        01   IN-FILE-STATUS           PIC XX.
        *>
-       01   WRK-LEY-AREA.
-            03   WK-KEY-OLD          PIC X(002).
-            03   WK-KEY-NEW          PIC X(002).
+       01   WRK-SHOHIN-ZYOHOU-AREA.
+            03   WK-BUNRUI-CODE-OLD          PIC X(002).
+            03   WK-BUNRUI-CODE-NEW          PIC X(002).
+            03   WK-SHOHIN-NO-OLD            PIC 9(004).
+            03   WK-SHOHIN-NO-NEW            PIC 9(004).
        *>
        01   WK-SUM-AREA.
             03   WK-SUM-TYUMON-SU    PIC 9(004).
