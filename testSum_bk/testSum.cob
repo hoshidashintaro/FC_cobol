@@ -121,7 +121,6 @@
                                                   OT01-SHOHIN-NO
                    MOVE   WK-SUM-TYUMON-SU     TO   OT01-TYUMON-SU
                    WRITE   OT01-RECODE
-          DISPLAY"ELSE WRITE OT01-RECODE:"OT01-RECODE
       *>
       *>次のキーをセット
                    MOVE WK-BUNRUI-CODE-NEW TO WK-BUNRUI-CODE-OLD
