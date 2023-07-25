@@ -32,6 +32,9 @@
        *>----------------------------------------------------------------------------
        FD   IN01-FILE.
        01   IN01-RECODE.
+            03   IN01-ZYUTYU-BANGOU.
+                 05   IN01-MISEBAN               PIC X(003).
+                 05   IN01-TYUMON-BANGOU         PIC 9(005).
             03   IN01-SHOHIN-ZYOHOU.
                  05   IN01-SHOHIN-CODE.
                       07   IN01-BUNRUI-CODE      PIC X(002).
