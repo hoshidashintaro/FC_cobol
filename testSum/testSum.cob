@@ -78,44 +78,18 @@
       *>-----------------------------------------------------------------------
        PROCEDURE                          DIVISION.
       *>
-             PERFORM   MAIN-PROC.
+           PERFORM   MAIN-PROC.
       *>
-             MOVE   SPACE   TO   IN-FILE-STATUS.
-             MOVE   SPACE   TO   WK-BUNRUI-CODE-OLD.
-             MOVE   SPACE   TO   WK-BUNRUI-CODE-NEW.
-             MOVE   ZERO    TO   WK-SHOHIN-NO-OLD.
-             MOVE   ZERO    TO   WK-SHOHIN-NO-NEW.
-             MOVE   ZERO    TO   IN01-TYUMON-SU.
-             MOVE   ZERO    TO   WK-SUM-TYUMON-SU.
+           PERFORM   TERM-PROC.
       *>
-      *>     ファイルのオープン
-             OPEN   INPUT    IN01-FILE
-                    OUTPUT   OT01-FILE.
-      *>
-           READ IN01-FILE
-                AT     END
-                DISPLAY   "READ END"
-      *>
-               NOT   AT   END
-               MOVE   IN01-BUNRUI-CODE      TO   WK-BUNRUI-CODE-NEW
-                                                 WK-BUNRUI-CODE-OLD
-               MOVE   IN01-SHOHIN-NO        TO   WK-SHOHIN-NO-OLD
-                                                 WK-SHOHIN-NO-NEW
-               MOVE   IN01-TYUMON-SU        TO   WK-SUM-TYUMON-SU
-               DISPLAY"NOT AT初期WK-BUNRUI-CODE-NEW:"
-               WK-BUNRUI-CODE-NEW
-               DISPLAY"NOT AT初期WK-BUNRUI-CODE-OLD:"
-               WK-BUNRUI-CODE-OLD
-               DISPLAY"NOT AT初期IN01-TYUMON-SU:"IN01-TYUMON-SU
-               DISPLAY"NOT AT初期WK-SUM-TYUMON-SU:"WK-SUM-TYUMON-SU
-           END-READ.
+           STOP RUN.
       *>-----------------------------------------------------------------------
       *>主処理
       *>-----------------------------------------------------------------------
+       MAIN-PROC                          SECTION.
       *>
-      *>-----------------------------------------------------------------------
-      *>初期処理
-      *>-----------------------------------------------------------------------
+       PERFORM   INIT-PROC.
+      *>
        PERFORM UNTIL IN-FILE-STATUS NOT = "00"
       *>
            READ   IN01-FILE
@@ -133,7 +107,7 @@
                NOT   AT   END
                MOVE   IN01-BUNRUI-CODE     TO   WK-BUNRUI-CODE-NEW
                MOVE   IN01-SHOHIN-NO       TO   WK-SHOHIN-NO-NEW
-               DISPLAY"NOT AT END IN01-BUNRUI-CODE:"IN01-BUNRUI-CODE
+          DISPLAY"NOT AT END IN01-BUNRUI-CODE:"IN01-BUNRUI-CODE
       *>
       *>       キーブレイク
                IF   WK-BUNRUI-CODE-NEW  =  WK-BUNRUI-CODE-OLD   AND
@@ -141,45 +115,90 @@
       *>
       *>       データ集計
                THEN
-               DISPLAY"キーブレイクWK-BUNRUI-CODE-NEW:"
-               WK-BUNRUI-CODE-NEW
-               DISPLAY"キーブレイクWK-BUNRUI-CODE-OLD:"
-               WK-BUNRUI-CODE-OLD
+          DISPLAY"キーブレイクWK-BUNRUI-CODE-NEW:"
+                            WK-BUNRUI-CODE-NEW
+          DISPLAY"キーブレイクWK-BUNRUI-CODE-OLD:"
+                            WK-BUNRUI-CODE-OLD
                    COMPUTE   WK-SUM-TYUMON-SU =
                                     WK-SUM-TYUMON-SU + IN01-TYUMON-SU
-               DISPLAY"キーブレイクWK-SUM-TYUMON-SU:"
-               WK-SUM-TYUMON-SU
-               DISPLAY"キーブレイクIN01-TYUMON-SU:"
-               IN01-TYUMON-SU
+          DISPLAY"キーブレイクWK-SUM-TYUMON-SU:"
+                            WK-SUM-TYUMON-SU
+          DISPLAY"キーブレイクIN01-TYUMON-SU:"
+                            IN01-TYUMON-SU
       *>
       *>       ファイル出力
                ELSE
                    MOVE   WK-BUNRUI-CODE-OLD   TO
                                                   OT01-BUNRUI-CODE
-                   MOVE   WK-SHOHIN-NO-OLD   TO
+                   MOVE   WK-SHOHIN-NO-OLD     TO
                                                   OT01-SHOHIN-NO
                    MOVE   WK-SUM-TYUMON-SU     TO   OT01-TYUMON-SU
-              DISPLAY"ファイル出力OT01-BUNRUI-CODE:"
-              OT01-BUNRUI-CODE
-              DISPLAY"ファイル出力OT01-TYUMON-SU:"
-              OT01-TYUMON-SU
+          DISPLAY"ファイル出力OT01-BUNRUI-CODE:"
+                            OT01-BUNRUI-CODE
+          DISPLAY"ファイル出力OT01-TYUMON-SU:"
+                            OT01-TYUMON-SU
                    WRITE   OT01-RECODE
-                   DISPLAY"ELSE WRITE OT01-RECODE:"OT01-RECODE
+          DISPLAY"ELSE WRITE OT01-RECODE:"OT01-RECODE
       *>
       *>次のキーをセット
                    MOVE WK-BUNRUI-CODE-NEW TO WK-BUNRUI-CODE-OLD
                    MOVE WK-SHOHIN-NO-NEW   TO WK-SHOHIN-NO-OLD
                    MOVE IN01-TYUMON-SU TO WK-SUM-TYUMON-SU
-                   DISPLAY"次キーセットWK-BUNRUI-CODE-NEW:"
-                   WK-BUNRUI-CODE-NEW
-                   DISPLAY"次キーセットWK-BUNRUI-CODE-OLD:"
-                   WK-BUNRUI-CODE-OLD
+          DISPLAY"次キーセットWK-BUNRUI-CODE-NEW:"
+                            WK-BUNRUI-CODE-NEW
+          DISPLAY"次キーセットWK-BUNRUI-CODE-OLD:"
+                            WK-BUNRUI-CODE-OLD
                END-IF
            END-READ
        END-PERFORM.
+
+       MAIN-PROC-EXIT.
+      *>
+           EXIT.
+      *>-----------------------------------------------------------------------
+      *>初期処理
+      *>-----------------------------------------------------------------------
+       INIT-PROC                          SECTION.
+      *>
+      *>
+           MOVE   SPACE   TO   IN-FILE-STATUS.
+           MOVE   SPACE   TO   WK-BUNRUI-CODE-OLD.
+           MOVE   SPACE   TO   WK-BUNRUI-CODE-NEW.
+           MOVE   ZERO    TO   WK-SHOHIN-NO-OLD.
+           MOVE   ZERO    TO   WK-SHOHIN-NO-NEW.
+           MOVE   ZERO    TO   IN01-TYUMON-SU.
+           MOVE   ZERO    TO   WK-SUM-TYUMON-SU.
+      *>
+      *>  ファイルのオープン
+           OPEN   INPUT    IN01-FILE
+                  OUTPUT   OT01-FILE.
+      *>
+           READ IN01-FILE
+                 AT     END
+                 DISPLAY   "READ END"
+      *>
+                NOT   AT   END
+                MOVE   IN01-BUNRUI-CODE      TO   WK-BUNRUI-CODE-NEW
+                                                  WK-BUNRUI-CODE-OLD
+                MOVE   IN01-SHOHIN-NO        TO   WK-SHOHIN-NO-OLD
+                                                  WK-SHOHIN-NO-NEW
+                MOVE   IN01-TYUMON-SU        TO   WK-SUM-TYUMON-SU
+           DISPLAY"NOT AT初期WK-BUNRUI-CODE-NEW:"
+                            WK-BUNRUI-CODE-NEW
+           DISPLAY"NOT AT初期WK-BUNRUI-CODE-OLD:"
+                            WK-BUNRUI-CODE-OLD
+           DISPLAY"NOT AT初期IN01-TYUMON-SU:"IN01-TYUMON-SU
+           DISPLAY"NOT AT初期WK-SUM-TYUMON-SU:"WK-SUM-TYUMON-SU
+           END-READ.
+       INIT-PROC-EXIT.
+      *>
+           EXIT.
       *>-----------------------------------------------------------------------
       *>終了処理
       *>-----------------------------------------------------------------------
+       TERM-PROC                         SECTION.
        CLOSE   IN01-FILE
                OT01-FILE.
-       STOP RUN.
+       TERM-PROC-EXIT.
+      *>
+           EXIT.
