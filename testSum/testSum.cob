@@ -61,7 +61,7 @@
              MOVE   SPACE   TO   IN-FILE-STATUS.
              MOVE   SPACE   TO   WK-KEY-OLD.
              MOVE   SPACE   TO   WK-KEY-NEW.
-             MOVE   ZERO    TO   WK-SUM-SUJI.
+             MOVE   ZERO    TO   WK-SUM-TYUMON-SU.
        *>
        *>    ファイルのオープン
              OPEN   INPUT    IN01-FILE
@@ -72,12 +72,12 @@
                 DISPLAY   "READ END"
            *>
                NOT   AT   END
-               MOVE   IN01-YEAR   TO   WK-KEY-NEW
-                                       WK-KEY-OLD
-               MOVE   IN01-SUJI   TO   WK-SUM-SUJI
+               MOVE   IN01-BUNRUI      TO   WK-KEY-NEW
+                                            WK-KEY-OLD
+               MOVE   IN01-TYUMON-SU   TO   WK-SUM-TYUMON-SU
                DISPLAY"NOT AT初期WK-KEY-NEW:"WK-KEY-NEW
                DISPLAY"NOT AT初期WK-KEY-OLD:"WK-KEY-OLD
-               DISPLAY"NOT AT初期WK-SUM-SUJI:"WK-SUM-SUJI
+               DISPLAY"NOT AT初期WK-SUM-TYUMON-SU:"WK-SUM-TYUMON-SU
            END-READ.
        *>-----------------------------------------------------------------------
        *>主処理
