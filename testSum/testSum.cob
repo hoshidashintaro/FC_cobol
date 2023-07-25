@@ -63,7 +63,7 @@
             03   WK-SHOHIN-NO-NEW            PIC 9(004).
        *>
        01   WK-SUM-AREA.
-            03   WK-SUM-TYUMON-SU    PIC 9(004).
+            03   WK-SUM-TYUMON-SU            PIC 9(004).
        *>-----------------------------------------------------------------------
        *>初期処理（ファイルのオープン）
        *>-----------------------------------------------------------------------
@@ -71,6 +71,9 @@
              MOVE   SPACE   TO   IN-FILE-STATUS.
              MOVE   SPACE   TO   WK-BUNRUI-CODE-OLD.
              MOVE   SPACE   TO   WK-BUNRUI-CODE-NEW.
+             MOVE   ZERO    TO   WK-SHOHIN-NO-OLD.
+             MOVE   ZERO    TO   WK-SHOHIN-NO-NEW.
+             MOVE   ZERO    TO   IN01-TYUMON-SU.
              MOVE   ZERO    TO   WK-SUM-TYUMON-SU.
        *>
        *>    ファイルのオープン
@@ -83,11 +86,15 @@
            *>
                NOT   AT   END
                MOVE   IN01-BUNRUI-CODE      TO   WK-BUNRUI-CODE-NEW
-                                            WK-BUNRUI-CODE-OLD
-               MOVE   IN01-TYUMON-SU   TO   WK-SUM-TYUMON-SU
-               DISPLAY"NOT AT初期WK-BUNRUI-CODE-NEW:"WK-BUNRUI-CODE-NEW
+                                                 WK-BUNRUI-CODE-OLD
+               MOVE   IN01-SHOHIN-NO        TO   WK-SHOHIN-NO-OLD
+                                                 WK-SHOHIN-NO-NEW
+               MOVE   IN01-TYUMON-SU        TO   WK-SUM-TYUMON-SU
+               DISPLAY"NOT AT初期WK-BUNRUI-CODE-NEW:"
+               WK-BUNRUI-CODE-NEW
                DISPLAY"NOT AT初期WK-BUNRUI-CODE-OLD:"
                WK-BUNRUI-CODE-OLD
+               DISPLAY"NOT AT初期IN01-TYUMON-SU:"IN01-TYUMON-SU
                DISPLAY"NOT AT初期WK-SUM-TYUMON-SU:"WK-SUM-TYUMON-SU
            END-READ.
        *>-----------------------------------------------------------------------
@@ -99,6 +106,7 @@
                AT   END
                DISPLAY   "READ END"
                MOVE   WK-BUNRUI-CODE-OLD   TO   OT01-BUNRUI-CODE
+               MOVE   WK-SHOHIN-NO-OLD     TO   OT01-SHOHIN-NO
                MOVE   WK-SUM-TYUMON-SU     TO   OT01-TYUMON-SU
           DISPLAY"読み込み終了 AT END OT01-BUNRUI-CODE:"
           OT01-BUNRUI-CODE
@@ -108,10 +116,12 @@
        *>
                NOT   AT   END
                MOVE   IN01-BUNRUI-CODE     TO   WK-BUNRUI-CODE-NEW
+               MOVE   IN01-SHOHIN-NO       TO   WK-SHOHIN-NO-NEW
                DISPLAY"NOT AT END IN01-BUNRUI-CODE:"IN01-BUNRUI-CODE
        *>
        *>      キーブレイク
-               IF   WK-BUNRUI-CODE-NEW  =  WK-BUNRUI-CODE-OLD
+               IF   WK-BUNRUI-CODE-NEW  =  WK-BUNRUI-CODE-OLD   AND
+                    WK-SHOHIN-NO-OLD    =  WK-SHOHIN-NO-NEW
        *>
        *>      データ集計
                THEN
@@ -128,15 +138,21 @@
        *>
        *>      ファイル出力
                ELSE
-                   MOVE   WK-BUNRUI-CODE-OLD   TO   OT01-BUNRUI-CODE
+                   MOVE   WK-BUNRUI-CODE-OLD   TO
+                                                  OT01-BUNRUI-CODE
+                   MOVE   WK-SHOHIN-NO-OLD   TO
+                                                  OT01-SHOHIN-NO
                    MOVE   WK-SUM-TYUMON-SU     TO   OT01-TYUMON-SU
-              DISPLAY"ファイル出力OT01-BUNRUI-CODE:"OT01-BUNRUI-CODE
-              DISPLAY"ファイル出力OT01-TYUMON-SU:"OT01-TYUMON-SU
+              DISPLAY"ファイル出力OT01-BUNRUI-CODE:"
+              OT01-BUNRUI-CODE
+              DISPLAY"ファイル出力OT01-TYUMON-SU:"
+              OT01-TYUMON-SU
                    WRITE   OT01-RECODE
                    DISPLAY"ELSE WRITE OT01-RECODE:"OT01-RECODE
        *>
        *>次のキーをセット
-                   MOVE WK-BUNRUI-CODE-NEW TO WK-KEY-OLD
+                   MOVE WK-BUNRUI-CODE-NEW TO WK-BUNRUI-CODE-OLD
+                   MOVE WK-SHOHIN-NO-NEW   TO WK-SHOHIN-NO-OLD
                    MOVE IN01-TYUMON-SU TO WK-SUM-TYUMON-SU
                    DISPLAY"次キーセットWK-BUNRUI-CODE-NEW:"
                    WK-BUNRUI-CODE-NEW
