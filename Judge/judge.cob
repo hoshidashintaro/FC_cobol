@@ -146,13 +146,13 @@
       *>      IN01-FILEの値をOT01-FILEに代入する
       *>
       *>      IN01-MISEBANが文字列であるかを判定する
-       IF   IN01-MISEBAN IS NUMERIC THEN
+               MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
+       IF   IN01-TYUMON-BANGOU IS NUMERIC THEN
           DISPLAY  "不適切な値です"
           STOP RUN
        ELSE
-               MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
-       END-IF
                MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
+       END-IF
                WRITE     OT01-RECODE
                      ADD   1   TO   WRK-COUNT
       *>
