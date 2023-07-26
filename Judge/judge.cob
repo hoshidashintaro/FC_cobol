@@ -134,6 +134,7 @@
                ELSE IF IN01-RECODE >= 1 THEN
                MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
                MOVE      IN01-TYUMON-BANDOU   TO   OT01-TYUMON-BANDOU
+               WRITE     OT01-RECODE
                      ADD   1   TO   WRK-COUNT
       *>
            END-READ
@@ -148,7 +149,7 @@
       *>         MOVE      IN01-MISEBAN         TO   OT01-MISEBAN.
       *>         MOVE      IN01-TYUMON-BANDOU   TO   OT01-TYUMON-BANDOU.
       *>
-               WRITE     OT01-RECODE.
+      *>         WRITE     OT01-RECODE.
       *>
        PRINT-PROC-EXIT.
       *>
