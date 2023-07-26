@@ -49,14 +49,14 @@
       *>************************************************************************
        WORKING-STORAGE               SECTION.
       *>
-      *> 01   WRK-WOEK-AREA.
+       01   WRK-WOEK-AREA.
              03   WRK-COUNT                        PIC 9(006).
       *>
       *>出力件数を表示する領域
        01   MS3-MESSAGE-AREA.
-            03   FILLER                       PIC X(014)
+            03   FILLER                       PIC X(020)
                                         VALUE "出力件数：".
-            03   WRK-COUNT                   PIC ZZZ,ZZ9.
+            03   MSG3-COUNT                   PIC ZZZ,ZZ9.
       *>ステータスの領域を定義を設定する
        01  IN-FILE-STATUS                           PIC XX.
       *>************************************************************************
@@ -145,8 +145,12 @@
       *>
       *>      IN01-FILEの値をOT01-FILEに代入する
       *>
-      *>IN01-MISEBANが文字列であるかを判定する
+      *>      IN01-MISEBANが文字列であるかを判定する
+       IF   IN01-MISEBAN IS NUMERIC THEN
+          DISPLAY  "不適切な値です"
+       ELSE
                MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
+       END-IF
                MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
                WRITE     OT01-RECODE
                      ADD   1   TO   WRK-COUNT
