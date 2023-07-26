@@ -92,17 +92,34 @@
       *>
        PERFORM UNTIL IN-FILE-STATUS NOT = "00"
       *>
+      *>   IN01-FILEを読み込む
            READ   IN01-FILE
+      *>
+      *>       読み込み終了
                AT   END
+      *>
+      *>       READ ENDを表示する
                DISPLAY   "READ END"
+      *>
+      *>       商品コード：分類コードを出力ファイルに渡す
                MOVE   WK-BUNRUI-CODE-OLD   TO   OT01-BUNRUI-CODE
+      *>
+      *>       商品コード：商品Noを出力ファイルに渡す
                MOVE   WK-SHOHIN-NO-OLD     TO   OT01-SHOHIN-NO
+      *>
+      *>       合計の注文数を出力ファイルに渡す
                MOVE   WK-SUM-TYUMON-SU     TO   OT01-TYUMON-SU
+      *>
+      *>       改行なしで値を詰めた状態でWRITEの命令をする
                WRITE   OT01-RECODE
       *>
+      *>       ファイルがある場合
                NOT   AT   END
+      *>
+      *>       商品コードを上書きする
                MOVE   IN01-BUNRUI-CODE     TO   WK-BUNRUI-CODE-NEW
                MOVE   IN01-SHOHIN-NO       TO   WK-SHOHIN-NO-NEW
+      *>
       *>
       *>       キーブレイク
                IF   WK-BUNRUI-CODE-NEW  =  WK-BUNRUI-CODE-OLD   AND
@@ -110,9 +127,12 @@
       *>
       *>       データ集計
                THEN
+      *>
+      *>          ソート済みのため以下の記述で問題ない
                    COMPUTE   WK-SUM-TYUMON-SU =
                                     WK-SUM-TYUMON-SU + IN01-TYUMON-SU
       *>
+      *>       商品コードが異なった場合はWRITE処理を行う
       *>       ファイル出力
                ELSE
                    MOVE   WK-BUNRUI-CODE-OLD   TO
@@ -122,9 +142,14 @@
                    MOVE   WK-SUM-TYUMON-SU     TO   OT01-TYUMON-SU
                    WRITE   OT01-RECODE
       *>
-      *>次のキーをセット
+      *>           次のキーをセット
+      *>           商品コード：新しい分類コードを古いコードに渡す
                    MOVE WK-BUNRUI-CODE-NEW TO WK-BUNRUI-CODE-OLD
+      *>
+      *>           商品コード：新しい分類コードを古いコードに渡す
                    MOVE WK-SHOHIN-NO-NEW   TO WK-SHOHIN-NO-OLD
+      *>
+      *>           IN01ファイルに入っている注文数を変数に渡す
                    MOVE IN01-TYUMON-SU TO WK-SUM-TYUMON-SU
                END-IF
            END-READ
