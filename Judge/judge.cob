@@ -21,7 +21,7 @@
       *>************************************************************************
       *>PT01プリントファイル
       *>************************************************************************
-       SELECT   PRT-FILE      ASSIGN         TO "0T01.txt"
+       SELECT   OT01-FILE     ASSIGN         TO "0T01.txt"
                               ORGANIZATION IS LINE SEQUENTIAL.
       *>************************************************************************
       *>データ部
@@ -52,6 +52,11 @@
        01   WRK-WOEK-AREA.
              03   WRK-COUNT                        PIC 9(006).
       *>
+      *>出力件数を表示する領域
+       01   MS3-MESSAGE-AREA.
+            03   FILLER                       PIC X(016)
+                                        VALUE "出力件数：".
+            03   MSG3-COUNT                   PIC ZZZ,ZZ9.
       *>ステータスの領域を定義を設定する
        01  IN-FILE-STATUS                           PIC XX.
       *>************************************************************************
@@ -103,7 +108,11 @@
       *>
       *>  ファイルのクローズ
            CLOSE   IN01-FILE
-                   PRT-FILE.
+                   OT01-FILE.
+      *>
+      *>出力件数の表示
+           MOVE   WRK-COUNT TO MSG3-COUNT.
+           DISPLAY   MS3-MESSAGE-AREA UPON CONSOLE.
       *>
        TERM-PROC-EXIT.
       *>
@@ -134,9 +143,10 @@
 
       *>
       *>      件数の代入と印刷処理
-               MOVE      WRK-COUNT            TO   PRT-COUNT.
+               MOVE      IN01-MISEBAN         TO   OT01-MISEBAN.
+               MOVE      IN01-TYUMON-BANDOU   TO   OT01-TYUMON-BANDOU.
       *>
-               WRITE     PRT-RECODE         FROM   PRT-COUNT.
+               WRITE     OT01-RECODE.
       *>
        PRINT-PROC-EXIT.
       *>
