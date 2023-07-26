@@ -1,0 +1,38 @@
+      *>   IN01を読む
+           READ   IN01-FILE
+      *    読み終わったら
+               AT   END
+      *    READ ENDを表示
+               DISPLAY   "READ END"
+      *    分類コードを渡す
+               MOVE   WK-BUNRUI-CODE-OLD   TO   OT01-BUNRUI-CODE
+      *    商品番号を渡す
+               MOVE   WK-SHOHIN-NO-OLD     TO   OT01-SHOHIN-NO
+      *    上記2つが商品コード
+      *    注文数を渡す
+               MOVE   WK-SUM-TYUMON-SU     TO   OT01-TYUMON-SU
+      *    改行がいらないので全て詰めてWrite命令をする
+               WRITE   OT01-RECODE
+      *>   ファイルがまだある場合
+               NOT   AT   END
+               MOVE   IN01-BUNRUI-CODE     TO   WK-BUNRUI-CODE-NEW
+               MOVE   IN01-SHOHIN-NO       TO   WK-SHOHIN-NO-NEW
+      *>   商品コードを上書き
+      *>       キーブレイク
+               IF   WK-BUNRUI-CODE-NEW  =  WK-BUNRUI-CODE-OLD   AND
+                    WK-SHOHIN-NO-OLD    =  WK-SHOHIN-NO-NEW
+      *>
+      *>       データ集計
+               THEN
+      *    ソート済のためこれでOK
+                   COMPUTE   WK-SUM-TYUMON-SU =
+                                    WK-SUM-TYUMON-SU + IN01-TYUMON-SU
+      *>   商品コードが違ったらWrite命令
+      *>       ファイル出力
+               ELSE
+                   MOVE   WK-BUNRUI-CODE-OLD   TO
+                                                  OT01-BUNRUI-CODE
+                   MOVE   WK-SHOHIN-NO-OLD     TO
+                                                  OT01-SHOHIN-NO
+                   MOVE   WK-SUM-TYUMON-SU     TO   OT01-TYUMON-SU
+                   WRITE   OT01-RECODE
