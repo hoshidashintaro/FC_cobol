@@ -147,7 +147,7 @@
       *>
       *>      IN01-MISEBANが文字列であるかを判定する
                MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
-       IF   IN01-TYUMON-BANGOU IS NUMERIC THEN
+       IF   IN01-TYUMON-BANGOU IS NOT NUMERIC THEN
           DISPLAY  "不適切な値です"
           STOP RUN
        ELSE
