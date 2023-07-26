@@ -148,6 +148,7 @@
       *>      IN01-MISEBANが文字列であるかを判定する
        IF   IN01-MISEBAN IS NUMERIC THEN
           DISPLAY  "不適切な値です"
+          RUN STOP
        ELSE
                MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
        END-IF
