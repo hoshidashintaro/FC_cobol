@@ -35,7 +35,7 @@
        01   IN01-RECODE.
           03   IN01-ZYUTYU-BANGOU.
                 05   IN01-MISEBAN                   PIC X(003).
-                05   IN01-TYUMON-BANDOU             PIC 9(005).
+                05   IN01-TYUMON-BANGOU             PIC 9(005).
       *>************************************************************************
       *>OT01-FILEのレイアウト定義
       *>************************************************************************
@@ -43,20 +43,20 @@
        01   OT01-RECODE.
           03   OT01-ZYUTYU-BANGOU.
                 05   OT01-MISEBAN                   PIC X(003).
-                05   OT01-TYUMON-BANDOU             PIC 9(005).
+                05   OT01-TYUMON-BANGOU             PIC 9(005).
       *>************************************************************************
       *>作業領域の定義
       *>************************************************************************
        WORKING-STORAGE               SECTION.
       *>
-       01   WRK-WOEK-AREA.
-             03   WRK-COUNT                        PIC 9(006).
+      *> 01   WRK-WOEK-AREA.
+      *>       03   WRK-COUNT                        PIC 9(006).
       *>
       *>出力件数を表示する領域
        01   MS3-MESSAGE-AREA.
-            03   FILLER                       PIC X(016)
+            03   FILLER                       PIC X(012)
                                         VALUE "出力件数：".
-            03   MSG3-COUNT                   PIC ZZZ,ZZ9.
+            03   WRK-COUNT                    PIC 9(006).
       *>ステータスの領域を定義を設定する
        01  IN-FILE-STATUS                           PIC XX.
       *>************************************************************************
@@ -66,7 +66,7 @@
       *>
              PERFORM   MAIN-PROC.
       *>
-             PERFORM   PRINT-PROC.
+             *>PERFORM   PRINT-PROC.
       *>
              PERFORM   TERM-PROC.
       *>
@@ -111,47 +111,36 @@
                    OT01-FILE.
       *>
       *>出力件数の表示
-           MOVE   WRK-COUNT TO MSG3-COUNT.
+           *>MOVE   WRK-COUNT TO MSG3-COUNT.
            DISPLAY   MS3-MESSAGE-AREA UPON CONSOLE.
       *>
        TERM-PROC-EXIT.
       *>
            EXIT.
       *>************************************************************************
-      *>IN01-FILEファイルの読み込み
+      *>IN01-FILEファイルの読み込み・書き込み処理
       *>************************************************************************
        IN01-FILE-READ-PROC       SECTION.
       *>
        PERFORM UNTIL IN-FILE-STATUS NOT = "00"
+      *>
+      *>  読み込み終了時
            READ IN01-FILE
                AT    END
+      *>
+      *>             READ ENDを表示して処理を終了する
                      DISPLAY "READ END"
       *>
+      *>       読み込み時
                NOT   AT     END
                IF IN01-RECODE = SPACE THEN
                MOVE   ZERO   TO   WRK-COUNT
                *>
                ELSE IF IN01-RECODE >= 1 THEN
                MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
-               MOVE      IN01-TYUMON-BANDOU   TO   OT01-TYUMON-BANDOU
+               MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
                WRITE     OT01-RECODE
                      ADD   1   TO   WRK-COUNT
       *>
            END-READ
        END-PERFORM.
-      *>************************************************************************
-      *>印刷処理
-      *>************************************************************************
-       PRINT-PROC       SECTION.
-
-      *>
-      *>      件数の代入と印刷処理
-      *>         MOVE      IN01-MISEBAN         TO   OT01-MISEBAN.
-      *>         MOVE      IN01-TYUMON-BANDOU   TO   OT01-TYUMON-BANDOU.
-      *>
-      *>         WRITE     OT01-RECODE.
-      *>
-       PRINT-PROC-EXIT.
-      *>
-           EXIT.
-       *>************************************************************************
