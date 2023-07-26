@@ -150,14 +150,20 @@
       *>
       *>      IN01-MISEBANが文字列であるかを判定する
        IF   IN01-TYUMON-BANGOU IS NOT NUMERIC
-      *> OR   FUNCTION LENGTH("IN01-TYUMON-BANGOU") NOT = 5
+       OR   FUNCTION STORED-CHAR-LENGTH(IN01-TYUMON-BANGOU) NOT = 5
        *>OR   IN01-TYUMON-BANGOU  = SPACE
        THEN
           DISPLAY  "不適切な値です"
           STOP RUN
        *>ELSE
        END-IF
+       END-IF
       *>
+               MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
+               MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
+               WRITE     OT01-RECODE
+                     ADD   1   TO   WRK-COUNT
+
            END-READ
        END-PERFORM.
       *>
