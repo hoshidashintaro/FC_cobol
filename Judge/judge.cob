@@ -50,13 +50,13 @@
        WORKING-STORAGE               SECTION.
       *>
       *> 01   WRK-WOEK-AREA.
-      *>       03   WRK-COUNT                        PIC 9(006).
+             03   WRK-COUNT                        PIC 9(006).
       *>
       *>出力件数を表示する領域
        01   MS3-MESSAGE-AREA.
-            03   FILLER                       PIC X(012)
+            03   FILLER                       PIC X(014)
                                         VALUE "出力件数：".
-            03   WRK-COUNT                    PIC 9(006).
+            03   WRK-COUNT                   PIC ZZZ,ZZ9.
       *>ステータスの領域を定義を設定する
        01  IN-FILE-STATUS                           PIC XX.
       *>************************************************************************
@@ -64,10 +64,10 @@
       *>************************************************************************
        PROCEDURE                     DIVISION.
       *>
+      *>    主処理
              PERFORM   MAIN-PROC.
       *>
-             *>PERFORM   PRINT-PROC.
-      *>
+      *>    終了処理
              PERFORM   TERM-PROC.
       *>
        STOP RUN.
@@ -110,8 +110,8 @@
            CLOSE   IN01-FILE
                    OT01-FILE.
       *>
-      *>出力件数の表示
-           *>MOVE   WRK-COUNT TO MSG3-COUNT.
+      *>  出力件数の表示
+           MOVE   WRK-COUNT TO MSG3-COUNT.
            DISPLAY   MS3-MESSAGE-AREA UPON CONSOLE.
       *>
        TERM-PROC-EXIT.
@@ -128,15 +128,24 @@
            READ IN01-FILE
                AT    END
       *>
-      *>             READ ENDを表示して処理を終了する
+      *>            READ ENDを表示して処理を終了する
                      DISPLAY "READ END"
       *>
-      *>       読み込み時
+      *>      読み込み時
                NOT   AT     END
+      *>
+      *>      IN01-FILEにレコードがない場合
                IF IN01-RECODE = SPACE THEN
+      *>
+      *>      WRK-COUNTに ZERO を代入して０件を出力する
                MOVE   ZERO   TO   WRK-COUNT
-               *>
+      *>
+      *>      IN01-FILEにレコードがある場合
                ELSE IF IN01-RECODE >= 1 THEN
+      *>
+      *>      IN01-FILEの値をOT01-FILEに代入する
+      *>
+      *>IN01-MISEBANが文字列であるかを判定する
                MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
                MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
                WRITE     OT01-RECODE
