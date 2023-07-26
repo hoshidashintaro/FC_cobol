@@ -164,6 +164,7 @@
        INIT-PROC                          SECTION.
       *>
       *>
+      *>   IN-FILE-STATUSの初期化
            MOVE   SPACE   TO   IN-FILE-STATUS.
            MOVE   SPACE   TO   WK-BUNRUI-CODE-OLD.
            MOVE   SPACE   TO   WK-BUNRUI-CODE-NEW.
