@@ -111,8 +111,12 @@
                    OT01-FILE.
       *>
       *>  出力件数の表示
-           MOVE   WRK-COUNT TO MSG3-COUNT.
-           DISPLAY   MS3-MESSAGE-AREA UPON CONSOLE.
+       IF WRK-COUNT = ZERO THEN
+       DISPLAY "IN01-FILEが空です"
+       ELSE
+           MOVE   WRK-COUNT TO MSG3-COUNT
+           DISPLAY   MS3-MESSAGE-AREA UPON CONSOLE
+       END-IF.
       *>
        TERM-PROC-EXIT.
       *>
@@ -136,27 +140,66 @@
       *>
       *>      IN01-FILEにレコードがない場合
                IF IN01-RECODE = SPACE THEN
+               DISPLAY"IN01-RECODE AT END:"IN01-RECODE
       *>
-      *>      WRK-COUNTに ZERO を代入して０件を出力する
-               MOVE   ZERO   TO   WRK-COUNT
+      *>      IN01-FILEがないエラーを出力する
+                     MOVE   ZERO   TO   WRK-COUNT
       *>
       *>      IN01-FILEにレコードがある場合
                ELSE IF IN01-RECODE >= 1 THEN
       *>
-      *>      IN01-FILEの値をOT01-FILEに代入する
-      *>
       *>      IN01-MISEBANが文字列であるかを判定する
-               MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
        IF   IN01-TYUMON-BANGOU IS NOT NUMERIC
-       OR   FUNCTION LENGTH("IN01-TYUMON-BANGOU") NOT = 5
+      *> OR   FUNCTION LENGTH("IN01-TYUMON-BANGOU") NOT = 5
+       *>OR   IN01-TYUMON-BANGOU  = SPACE
        THEN
           DISPLAY  "不適切な値です"
           STOP RUN
-       ELSE
-               MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
+       *>ELSE
        END-IF
-               WRITE     OT01-RECODE
-                     ADD   1   TO   WRK-COUNT
       *>
            END-READ
        END-PERFORM.
+      *>
+       IN01-FILE-READ-PROC-EXIT.
+      *>
+           EXIT.
+      *>************************************************************************
+      *>IN01-FILEファイルの読み込み・書き込み処理
+      *>************************************************************************
+       *>IN01-FILE-READ-PROC       SECTION.
+      *>
+       *>PERFORM UNTIL IN-FILE-STATUS NOT = "00"
+      *>
+      *>  読み込み終了時
+      *>     READ IN01-FILE
+      *>         AT    END
+      *>
+      *>            READ ENDを表示して処理を終了する
+      *>               DISPLAY "READ END"
+      *>
+      *>      読み込み時
+      *>         NOT   AT     END
+      *>
+      *>      IN01-FILEにレコードがない場合
+      *>         *>IF IN01-RECODE = SPACE THEN
+      *>
+      *>      WRK-COUNTに ZERO を代入して０件を出力する
+      *>         *>MOVE   ZERO   TO   WRK-COUNT
+      *>
+      *>      IN01-FILEにレコードがある場合
+      *>         *>ELSE IF IN01-RECODE >= 1 THEN
+      *>
+      *>      IN01-FILEの値をOT01-FILEに代入する
+      *>
+      *>         MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
+      *>         MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
+      *>         WRITE     OT01-RECODE
+      *>               ADD   1   TO   WRK-COUNT
+      *>
+      *>     END-READ
+      *> END-PERFORM.
+      *>
+      *> IN01-FILE-READ-PROC-EXIT.
+      *>
+      *>     EXIT.
