@@ -67,7 +67,7 @@
        01   OT01-DISPLAY-AREA.
             03   DSP-OT01.
                  05   FILLER                  PIC X(012)
-                                      VALUE "IN01 COUNT:".
+                                      VALUE "OT01 COUNT:".
                  05   DSP-OT01-CNT            PIC ZZ9.
       *>
        01   IN-FILE-STATUS                    PIC XX.
@@ -108,9 +108,7 @@
                   OUTPUT   OT01-ZYUTYU-FILE.
       *>
       *>  受注ファイルの読み込み
-           PERFORM ZYUTYU-FILE-READ-PROC.
-      *>
-           PERFORM UNTIL IN-FILE-STATUS NOT = "00"
+        PERFORM UNTIL IN-FILE-STATUS  = "ED"
       *>
            IF     IN01-MISEBAN  =  "T01"   THEN
       *>
@@ -134,7 +132,6 @@
       *>----------------------------------------------------------------------------
        FINAL-PROC                         SECTION.
       *>
-      *>
       *>入出力件数の表示
            MOVE   CNT-IN01  TO DSP-IN01-CNT.
            MOVE   CNT-OT01  TO DSP-OT01-CNT.
@@ -156,10 +153,16 @@
       *>
            READ   IN01-ZYUTYU-FILE
              AT   END
-                  DISPLAY "READ END"
+                  MOVE "ED" TO IN-FILE-STATUS
       *>
             NOT   AT   END
-                  ADD   1   TO   CNT-IN01
+      *>
+            IF   IN01-RECODE = SPACE THEN
+                 MOVE "END"       TO IN-FILE-STATUS
+      *>
+            ELSE IF   IN01-RECODE >= 1 THEN
+                 ADD   1          TO   CNT-IN01
+            END-IF
            END-READ.
       *>
        ZYUTYU-FILE-READ-PROC-EXIT.

@@ -85,7 +85,8 @@
                   OUTPUT   PR01-FILE.
       *>
       *>  入力ファイルの読み込み
-           PERFORM  IN01-FILE-READ-PROC UNTIL IN-FILE-STATUS  = "ED".
+           PERFORM  IN01-FILE-READ-PROC UNTIL
+                              IN-FILE-STATUS  = "ED".
       *>
       *>  印刷処理
            PERFORM   PRINT-PROC.
@@ -110,7 +111,6 @@
       *>************************************************************************
        IN01-FILE-READ-PROC       SECTION.
       *>
-       DISPLAY"PER IN-FILE-STATUS:"IN-FILE-STATUS
            READ   IN01-FILE
                AT   END
                     MOVE "ED" TO IN-FILE-STATUS
