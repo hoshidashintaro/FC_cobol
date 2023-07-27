@@ -40,14 +40,14 @@
       *>件数印刷のレイアウト定義
       *>************************************************************************
        FD   PR01-FILE.
-       01   PRT-RECODE                              PIC ZZZ,ZZ9.
+       01   PRT-RECODE                              PIC ZZ9.
       *>************************************************************************
       *>作業領域の定義
       *>************************************************************************
        WORKING-STORAGE               SECTION.
       *>
-       01   WRK-WOEK-AREA.
-             03   WRK-COUNT                         PIC 9(006).
+       01   COUNT-AREA.
+             03   CNT-IN01                          PIC 9(006).
       *>
       *>ステータスの領域を定義を設定する
        01   IN-FILE-STATUS                          PIC XX.
@@ -56,20 +56,29 @@
       *>************************************************************************
        PROCEDURE                     DIVISION.
       *>
-             PERFORM   MAIN-PROC.
+          PERFORM   INITIAL-PROC.
       *>
-             PERFORM   PRINT-PROC.
+          PERFORM   MAIN-PROC.
       *>
-             PERFORM   TERM-PROC.
+          PERFORM   FINAL-PROC.
       *>
        STOP RUN.
+      *>************************************************************************
+      *>初期処理
+      *>************************************************************************
+       INITIAL-PROC                     SECTION.
+      *>
+      *>  作業領域の初期化
+           MOVE   ZERO    TO   CNT-IN01.
+           MOVE   SPACE   TO   IN-FILE-STATUS.
+      *>
+       INITIAL-PROC-EXIT.
+      *>
+           EXIT.
       *>************************************************************************
       *>主処理
       *>************************************************************************
        MAIN-PROC                     SECTION.
-      *>
-      *>    初期処理を行う（遷移する）
-             PERFORM   INIT-PROC.
       *>
       *>  ファイルのオープン
            OPEN   INPUT    IN01-FILE
@@ -78,31 +87,10 @@
       *>  入力ファイルの読み込み
            PERFORM    IN01-FILE-READ-PROC.
       *>
+      *>  印刷処理
+           PERFORM   PRINT-PROC.
+      *>
        MAIN-PROC-EXIT.
-      *>
-           EXIT.
-      *>************************************************************************
-      *>初期処理
-      *>************************************************************************
-       INIT-PROC                     SECTION.
-      *>
-      *>  作業領域の初期化
-           MOVE   ZERO    TO   WRK-COUNT.
-           MOVE   SPACE   TO   IN-FILE-STATUS.
-      *>
-       INIT-PROC-EXIT.
-      *>
-           EXIT.
-      *>************************************************************************
-      *>終了処理
-      *>************************************************************************
-       TERM-PROC                     SECTION.
-      *>
-      *>  ファイルのクローズ
-           CLOSE   IN01-FILE
-                   PR01-FILE.
-      *>
-       TERM-PROC-EXIT.
       *>
            EXIT.
       *>************************************************************************
@@ -118,10 +106,10 @@
                NOT   AT     END
                *>
                IF IN01-RECODE = SPACE THEN
-                   MOVE   ZERO   TO   WRK-COUNT
+                   MOVE   ZERO   TO   CNT-IN01
                *>
                ELSE IF IN01-RECODE >= 1 THEN
-                   ADD    1      TO   WRK-COUNT
+                   ADD    1      TO   CNT-IN01
       *>
            END-READ
        END-PERFORM.
@@ -132,8 +120,20 @@
 
       *>
       *>      件数の代入と印刷処理
-               WRITE   PRT-RECODE   FROM   WRK-COUNT.
+               WRITE   PRT-RECODE   FROM   CNT-IN01.
       *>
        PRINT-PROC-EXIT.
+      *>
+           EXIT.
+      *>************************************************************************
+      *>終了処理
+      *>************************************************************************
+       FINAL-PROC                     SECTION.
+      *>
+      *>  ファイルのクローズ
+           CLOSE   IN01-FILE
+                   PR01-FILE.
+      *>
+       FINAL-PROC-EXIT.
       *>
            EXIT.
