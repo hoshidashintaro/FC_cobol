@@ -52,11 +52,21 @@
        01   WRK-WOEK-AREA.
              03   WRK-COUNT                        PIC 9(006).
       *>
+       01   ERR-WOEK-AREA.
+             03   ERR-COUNT                        PIC 9(006).
+      *>
       *>出力件数を表示する領域
        01   MS3-MESSAGE-AREA.
             03   FILLER                       PIC X(020)
                                         VALUE "出力件数：".
             03   MSG3-COUNT                   PIC ZZZ,ZZ9.
+      *>
+       01   ERR-MESSAGE-AREA.
+            03   FILLER                       PIC X(030)
+                                       VALUE "件目がエラー".
+            03   FILLER                       PIC X(030)
+                                       VALUE "により終了".
+            03   MSGE-COUNT                   PIC ZZZ,ZZ9.
       *>ステータスの領域を定義を設定する
        01  IN-FILE-STATUS                           PIC XX.
       *>************************************************************************
@@ -96,6 +106,7 @@
       *>
       *>  作業領域の初期化
            MOVE   ZERO        TO   WRK-COUNT.
+           MOVE   ZERO        TO   ERR-COUNT.
            MOVE   SPACE       TO   IN-FILE-STATUS.
       *>
        INIT-PROC-EXIT.
@@ -115,7 +126,9 @@
        DISPLAY "IN01-FILEが空です"
        ELSE
            MOVE   WRK-COUNT TO MSG3-COUNT
+           MOVE   ERR-COUNT TO MSGE-COUNT
            DISPLAY   MS3-MESSAGE-AREA UPON CONSOLE
+           DISPLAY   ERR-MESSAGE-AREA UPON CONSOLE
        END-IF.
       *>
        TERM-PROC-EXIT.
@@ -148,16 +161,25 @@
       *>      IN01-FILEにレコードがある場合
                ELSE IF IN01-RECODE >= 1 THEN
       *>
+      *>エラー判定の処理
       *>      IN01-MISEBANが文字列であるかを判定する
-       IF   IN01-TYUMON-BANGOU IS NOT NUMERIC
-       OR   FUNCTION STORED-CHAR-LENGTH(IN01-TYUMON-BANGOU) NOT = 5
-       *>OR   IN01-TYUMON-BANGOU  = SPACE
+       IF   IN01-MISEBAN = ZERO
+            OR   FUNCTION STORED-CHAR-LENGTH(IN01-MISEBAN) NOT = 3
        THEN
-          DISPLAY  "不適切な値です"
+            ADD   1   TO   ERR-COUNT
+          DISPLAY  "店番が不適切な値です"
           STOP RUN
-       *>ELSE
+      *>      IN01-MISEBANが文字列であるかを判定する
+       ELSE IF IN01-TYUMON-BANGOU = ZERO
+            OR   IN01-TYUMON-BANGOU IS NOT NUMERIC
+            OR   FUNCTION STORED-CHAR-LENGTH(IN01-TYUMON-BANGOU) NOT = 5
+            THEN
+            ADD   1   TO   ERR-COUNT
+          DISPLAY  "注文番号が不適切な値です"
+          STOP RUN
        END-IF
        END-IF
+          *>STOP RUN
       *>
                MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
                MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
@@ -188,21 +210,23 @@
       *>         NOT   AT     END
       *>
       *>      IN01-FILEにレコードがない場合
-      *>         *>IF IN01-RECODE = SPACE THEN
+      *>         IF IN01-RECODE = ZERO THEN
       *>
       *>      WRK-COUNTに ZERO を代入して０件を出力する
-      *>         *>MOVE   ZERO   TO   WRK-COUNT
+      *>             MOVE   ZERO   TO   WRK-COUNT
       *>
       *>      IN01-FILEにレコードがある場合
-      *>         *>ELSE IF IN01-RECODE >= 1 THEN
+      *>         ELSE
+      *>IN01-RECODE >= 1 THEN
       *>
       *>      IN01-FILEの値をOT01-FILEに代入する
       *>
-      *>         MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
-      *>         MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
-      *>         WRITE     OT01-RECODE
-      *>               ADD   1   TO   WRK-COUNT
+      *>             MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
+      *>             MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
+      *>             WRITE     OT01-RECODE
+      *>             ADD   1   TO   WRK-COUNT
       *>
+                 *>END-IF
       *>     END-READ
       *> END-PERFORM.
       *>
