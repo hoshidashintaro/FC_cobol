@@ -21,7 +21,7 @@
       *>************************************************************************
       *>PT01プリントファイル
       *>************************************************************************
-       SELECT   PRT-FILE      ASSIGN         TO "PT01.txt"
+       SELECT   PR01-FILE      ASSIGN         TO "PT01.txt"
                               ORGANIZATION IS LINE SEQUENTIAL.
       *>************************************************************************
       *>データ部
@@ -39,7 +39,7 @@
       *>************************************************************************
       *>件数印刷のレイアウト定義
       *>************************************************************************
-       FD   PRT-FILE.
+       FD   PR01-FILE.
        01   PRT-RECODE                              PIC ZZZ,ZZ9.
       *>************************************************************************
       *>作業領域の定義
@@ -47,15 +47,10 @@
        WORKING-STORAGE               SECTION.
       *>
        01   WRK-WOEK-AREA.
-             03   WRK-COUNT                        PIC 9(006).
+             03   WRK-COUNT                         PIC 9(006).
       *>
       *>ステータスの領域を定義を設定する
-       01  IN-FILE-STATUS                           PIC XX.
-      *>************************************************************************
-      *>印刷用パーツ定義
-      *>************************************************************************
-       01   HD01-PRT-COUNT.
-             03   PRT-COUNT                        PIC ZZZ,ZZ9.
+       01   IN-FILE-STATUS                          PIC XX.
       *>************************************************************************
       *>手続き部
       *>************************************************************************
@@ -78,7 +73,7 @@
       *>
       *>  ファイルのオープン
            OPEN   INPUT    IN01-FILE
-                  OUTPUT   PRT-FILE.
+                  OUTPUT   PR01-FILE.
       *>
       *>  入力ファイルの読み込み
            PERFORM    IN01-FILE-READ-PROC.
@@ -92,11 +87,8 @@
        INIT-PROC                     SECTION.
       *>
       *>  作業領域の初期化
-           MOVE   ZERO        TO   WRK-COUNT.
-           MOVE   SPACE       TO   IN-FILE-STATUS.
-      *>
-      *>  印刷用パーツ定義の初期化
-           MOVE   ZERO        TO   PRT-COUNT.
+           MOVE   ZERO    TO   WRK-COUNT.
+           MOVE   SPACE   TO   IN-FILE-STATUS.
       *>
        INIT-PROC-EXIT.
       *>
@@ -108,7 +100,7 @@
       *>
       *>  ファイルのクローズ
            CLOSE   IN01-FILE
-                   PRT-FILE.
+                   PR01-FILE.
       *>
        TERM-PROC-EXIT.
       *>
@@ -119,16 +111,17 @@
        IN01-FILE-READ-PROC       SECTION.
       *>
        PERFORM UNTIL IN-FILE-STATUS NOT = "00"
-           READ IN01-FILE
+           READ   IN01-FILE
                AT    END
                      DISPLAY "READ END"
       *>
                NOT   AT     END
+               *>
                IF IN01-RECODE = SPACE THEN
-               MOVE   ZERO   TO   WRK-COUNT
+                   MOVE   ZERO   TO   WRK-COUNT
                *>
                ELSE IF IN01-RECODE >= 1 THEN
-                     ADD   1   TO   WRK-COUNT
+                   ADD    1      TO   WRK-COUNT
       *>
            END-READ
        END-PERFORM.
@@ -139,11 +132,8 @@
 
       *>
       *>      件数の代入と印刷処理
-               MOVE      WRK-COUNT            TO   PRT-COUNT.
-      *>
-               WRITE     PRT-RECODE         FROM   PRT-COUNT.
+               WRITE   PRT-RECODE   FROM   WRK-COUNT.
       *>
        PRINT-PROC-EXIT.
       *>
            EXIT.
-       *>************************************************************************

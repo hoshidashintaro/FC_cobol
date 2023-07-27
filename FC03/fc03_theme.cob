@@ -49,31 +49,25 @@
        01   WRK-WORK-AREA.
             03   WRK-IN-COUNT                 PIC 9(006).
             03   WRK-OUT-COUNT                PIC 9(006).
-            03   WRK-MISEBAN                  PIC X(003).
       *>
-      *>商品マスタファイルマッチング領域
-       01   KY01-SHOHIN-M.
-            03   KY01-STATUS                  PIC 9(001).
-            03   KY01-MISEBAN                 PIC X(003).
-      *>
-      *>--処理が終了したときに終了したことを証明するメッセージを表記する--
+      *>処理が終了したときに終了したことを証明するメッセージを表記する
        01   MS1-MESSAGE-AREA.
             03   FILLER                       PIC X(040)
                           VALUE "SAMPLE03の出力結果".
       *>
-      *>--処理が終了した際に入力件数を表示する--
+      *>処理が終了した際に入力件数を表示する
        01   MS2-MESSAGE-AREA.
-            03   FILLER                       PIC X(030)
+            03   FILLER                       PIC X(024)
                                  VALUE "入力ファイル件数：".
             03   MSG2-COUNT                   PIC ZZZ,ZZ9.
       *>
-      *>--処理が終了した際に出力件数を表示する--
+      *>処理が終了した際に出力件数を表示する
        01   MS3-MESSAGE-AREA.
-            03   FILLER                       PIC X(030)
+            03   FILLER                       PIC X(024)
                                  VALUE "出力ファイル件数：".
             03   MSG3-COUNT                   PIC ZZZ,ZZ9.
       *>
-       01   IN-FILE-STATUS PIC XX.
+       01   IN-FILE-STATUS                    PIC XX.
       *>----------------------------------------------------------------------------
       *>手続き部
       *>----------------------------------------------------------------------------
@@ -90,14 +84,11 @@
        INIT-PROC                         SECTION.
       *>
       *>  ファイルステータスの初期化
-           MOVE   SPACE       TO   IN-FILE-STATUS.
+           MOVE   SPACE      TO   IN-FILE-STATUS.
       *>
       *>  作業領域の初期化
            MOVE   ZERO       TO   WRK-IN-COUNT.
            MOVE   ZERO       TO   WRK-OUT-COUNT.
-      *>
-      *>  マッチングキーの初期化（ステータス）
-           MOVE   ZERO       TO KY01-STATUS.
       *>
        INIT-PROC-EXIT.
       *>
@@ -138,13 +129,13 @@
       *>
            PERFORM UNTIL IN-FILE-STATUS NOT = "00"
       *>
-           IF     KY01-MISEBAN  =  "T01"   THEN
+           IF     IN01-MISEBAN  =  "T01"   THEN
       *>
                   PERFORM   WRITE-PROC
       *>
                   PERFORM   ZYUTYU-FILE-READ-PROC
       *>
-           ELSE   IF   KY01-MISEBAN NOT  =  "T01"   THEN
+           ELSE   IF   IN01-MISEBAN NOT  =  "T01"   THEN
       *>
                PERFORM   ZYUTYU-FILE-READ-PROC
       *>
@@ -160,13 +151,12 @@
       *>----------------------------------------------------------------------------
        WRITE-PROC                         SECTION.
       *>
-      *>
            MOVE    IN01-MISEBAN         TO   OT01-MISEBAN.
            MOVE    IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU.
       *>
            WRITE   OT01-RECODE.
       *>
-           ADD   1                      TO   WRK-OUT-COUNT.
+           ADD     1                    TO   WRK-OUT-COUNT.
       *>
        WRITE-PROC-EXIT.
       *>
@@ -178,12 +168,10 @@
       *>
            READ   IN01-ZYUTYU-FILE
              AT   END
-                  MOVE   9              TO   KY01-STATUS
                   DISPLAY "READ END"
       *>
             NOT   AT   END
-                  MOVE   IN01-MISEBAN   TO   KY01-MISEBAN
-                  ADD   1               TO   WRK-IN-COUNT
+                  ADD   1   TO   WRK-IN-COUNT
            END-READ.
       *>
        ZYUTYU-FILE-READ-PROC-EXIT.
