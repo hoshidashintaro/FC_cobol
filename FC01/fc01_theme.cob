@@ -12,7 +12,10 @@
        MOVE  ZERO TO  WK-SUJI-TOTAL.
       *>
       *>指定回数繰り返す処理
-       PERFORM VARYING WK-SUJI-I FROM 0 BY 1 UNTIL WK-SUJI-I > 10
+       PERFORM VARYING
+               WK-SUJI-I  FROM    0 BY 1
+               UNTIL      WK-SUJI-I > 10
+      *>
            COMPUTE WK-SUJI-TOTAL = WK-SUJI-TOTAL + WK-SUJI-I
        END-PERFORM.
       *>
