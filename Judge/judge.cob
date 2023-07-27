@@ -44,6 +44,7 @@
           03   OT01-ZYUTYU-BANGOU.
                 05   OT01-MISEBAN                   PIC X(003).
                 05   OT01-TYUMON-BANGOU             PIC 9(005).
+          03   OT01-ERR-MASSAGE-AREA                PIC X(050).
       *>************************************************************************
       *>作業領域の定義
       *>************************************************************************
@@ -54,6 +55,7 @@
       *>
        01   ERR-WOEK-AREA.
              03   ERR-COUNT                        PIC 9(006).
+             03   ERR-SUM-COUNT                    PIC 9(006).
       *>
       *>出力件数を表示する領域
        01   MS3-MESSAGE-AREA.
@@ -62,11 +64,11 @@
             03   MSG3-COUNT                   PIC ZZZ,ZZ9.
       *>
        01   ERR-MESSAGE-AREA.
-            03   FILLER                       PIC X(030)
-                                       VALUE "件目がエラー".
-            03   FILLER                       PIC X(030)
-                                       VALUE "により終了".
             03   MSGE-COUNT                   PIC ZZZ,ZZ9.
+            03   FILLER                       PIC X(018)
+                                       VALUE "件目がエラー".
+            03   FILLER                       PIC X(018)
+                                       VALUE "により終了".
       *>ステータスの領域を定義を設定する
        01  IN-FILE-STATUS                           PIC XX.
       *>************************************************************************
@@ -124,6 +126,10 @@
       *>  出力件数の表示
        IF WRK-COUNT = ZERO THEN
        DISPLAY "IN01-FILEが空です"
+       ELSE IF ERR-COUNT = 1 THEN
+           ADD    1   TO   WRK-COUNT
+           MOVE   WRK-COUNT TO MSG3-COUNT
+           DISPLAY   ERR-MESSAGE-AREA UPON CONSOLE
        ELSE
            MOVE   WRK-COUNT TO MSG3-COUNT
            MOVE   ERR-COUNT TO MSGE-COUNT
@@ -167,7 +173,16 @@
             OR   FUNCTION STORED-CHAR-LENGTH(IN01-MISEBAN) NOT = 3
        THEN
             ADD   1   TO   ERR-COUNT
+            DISPLAY"ERR-COUNT:"ERR-COUNT
           DISPLAY  "店番が不適切な値です"
+          IF ERR-COUNT = 1 THEN
+          COMPUTE   ERR-SUM-COUNT   =   ERR-COUNT + WRK-COUNT
+           MOVE   ERR-SUM-COUNT TO MSGE-COUNT
+           DISPLAY   ERR-MESSAGE-AREA UPON CONSOLE
+      *>
+       MOVE ERR-MESSAGE-AREA TO  OT01-ERR-MASSAGE-AREA
+       WRITE OT01-ERR-MASSAGE-AREA
+      *>
           STOP RUN
       *>      IN01-MISEBANが文字列であるかを判定する
        ELSE IF IN01-TYUMON-BANGOU = ZERO
@@ -177,6 +192,7 @@
             ADD   1   TO   ERR-COUNT
           DISPLAY  "注文番号が不適切な値です"
           STOP RUN
+          END-IF
        END-IF
        END-IF
           *>STOP RUN
@@ -223,6 +239,7 @@
       *>
       *>             MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
       *>             MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
+                     *>MOVE  ERR-MESSAGE-AREA  TO OT01-ERR-MASSAGE-AREA
       *>             WRITE     OT01-RECODE
       *>             ADD   1   TO   WRK-COUNT
       *>

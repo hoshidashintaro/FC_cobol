@@ -11,17 +11,9 @@
        MOVE  ZERO TO  WK-SUJI-I.
        MOVE  ZERO TO  WK-SUJI-TOTAL.
       *>
-      *>WK-SUJI-Iに１を加算する処理
-       ADD-PROC SECTION.
-               ADD  1 TO  WK-SUJI-I.
-       ADD-PROC-EXIT.
-       EXIT.
-      *>
-      *>
       *>指定回数繰り返す処理
-       PERFORM UNTIL WK-SUJI-I > 10
-           ADD WK-SUJI-I TO  WK-SUJI-TOTAL
-           PERFORM ADD-PROC
+       PERFORM VARYING WK-SUJI-I FROM 1 BY 1 UNTIL WK-SUJI-I > 10
+           COMPUTE WK-SUJI-TOTAL = WK-SUJI-TOTAL + WK-SUJI-I
        END-PERFORM.
       *>
       *>最終合計数を表示する
