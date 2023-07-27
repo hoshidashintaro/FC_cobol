@@ -85,7 +85,7 @@
                   OUTPUT   PR01-FILE.
       *>
       *>  入力ファイルの読み込み
-           PERFORM    IN01-FILE-READ-PROC.
+           PERFORM  IN01-FILE-READ-PROC UNTIL IN-FILE-STATUS  = "ED".
       *>
       *>  印刷処理
            PERFORM   PRINT-PROC.
@@ -110,21 +110,21 @@
       *>************************************************************************
        IN01-FILE-READ-PROC       SECTION.
       *>
-       PERFORM UNTIL IN-FILE-STATUS NOT = "00"
+       DISPLAY"PER IN-FILE-STATUS:"IN-FILE-STATUS
            READ   IN01-FILE
-               AT    END
-                     DISPLAY "READ END"
+               AT   END
+                    MOVE "ED" TO IN-FILE-STATUS
       *>
                NOT   AT     END
                *>
-               IF IN01-RECODE = SPACE THEN
-                   MOVE   ZERO   TO   CNT-IN01
+               IF        IN01-RECODE = SPACE THEN
+                         MOVE "END" TO IN-FILE-STATUS
                *>
-               ELSE IF IN01-RECODE >= 1 THEN
-                   ADD    1      TO   CNT-IN01
+               ELSE IF   IN01-RECODE >= 1 THEN
+                         ADD    1      TO   CNT-IN01
       *>
-           END-READ
-       END-PERFORM.
+           END-READ.
+       *>END-PERFORM.
       *>************************************************************************
       *>印刷処理
       *>************************************************************************
