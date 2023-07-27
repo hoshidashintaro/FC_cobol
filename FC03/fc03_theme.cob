@@ -46,26 +46,29 @@
       *>----------------------------------------------------------------------------
        WORKING-STORAGE                    SECTION.
       *>
-       01   WRK-WORK-AREA.
-            03   WRK-IN-COUNT                 PIC 9(006).
-            03   WRK-OUT-COUNT                PIC 9(006).
+       01   COUNT-AREA.
+            03   CNT-IN01                     PIC 9(006).
+            03   CNT-OT01                     PIC 9(006).
       *>
       *>処理が終了したときに終了したことを証明するメッセージを表記する
-       01   MS1-MESSAGE-AREA.
-            03   FILLER                       PIC X(040)
-                          VALUE "SAMPLE03の出力結果".
+       01   MS1-DISPLAY-AREA.
+            03   DSP-CLOSING-MSG.
+                 05   FILLER                  PIC X(040)
+                                VALUE "SAMPLE03の出力結果".
       *>
       *>処理が終了した際に入力件数を表示する
-       01   MS2-MESSAGE-AREA.
-            03   FILLER                       PIC X(024)
-                                 VALUE "入力ファイル件数：".
-            03   MSG2-COUNT                   PIC ZZZ,ZZ9.
+       01   IN01-DISPLAY-AREA.
+            03   DSP-IN01.
+                 05   FILLER                  PIC X(012)
+                                      VALUE "IN01 COUNT:".
+                 05   DSP-IN01-CNT            PIC ZZ9.
       *>
       *>処理が終了した際に出力件数を表示する
-       01   MS3-MESSAGE-AREA.
-            03   FILLER                       PIC X(024)
-                                 VALUE "出力ファイル件数：".
-            03   MSG3-COUNT                   PIC ZZZ,ZZ9.
+       01   OT01-DISPLAY-AREA.
+            03   DSP-OT01.
+                 05   FILLER                  PIC X(012)
+                                      VALUE "IN01 COUNT:".
+                 05   DSP-OT01-CNT            PIC ZZ9.
       *>
        01   IN-FILE-STATUS                    PIC XX.
       *>----------------------------------------------------------------------------
@@ -73,52 +76,32 @@
       *>----------------------------------------------------------------------------
        PROCEDURE                         DIVISION.
       *>
+           PERFORM   INITIAL-PROC.
+      *>
            PERFORM   MAIN-PROC.
       *>
-           PERFORM   TERM-PROC.
+           PERFORM   FINAL-PROC.
       *>
            STOP RUN.
       *>----------------------------------------------------------------------------
       *>初期処理
       *>----------------------------------------------------------------------------
-       INIT-PROC                         SECTION.
+       INITIAL-PROC                         SECTION.
       *>
       *>  ファイルステータスの初期化
            MOVE   SPACE      TO   IN-FILE-STATUS.
       *>
       *>  作業領域の初期化
-           MOVE   ZERO       TO   WRK-IN-COUNT.
-           MOVE   ZERO       TO   WRK-OUT-COUNT.
+           MOVE   ZERO       TO   CNT-IN01.
+           MOVE   ZERO       TO   CNT-OT01.
       *>
-       INIT-PROC-EXIT.
-      *>
-           EXIT.
-      *>----------------------------------------------------------------------------
-      *>終了処理
-      *>----------------------------------------------------------------------------
-       TERM-PROC                         SECTION.
-      *>
-      *>ファイルのクローズ
-           CLOSE   IN01-ZYUTYU-FILE
-                   OT01-ZYUTYU-FILE.
-      *>
-      *>入出力件数の表示
-           MOVE   WRK-IN-COUNT  TO MSG2-COUNT.
-           MOVE   WRK-OUT-COUNT TO MSG3-COUNT.
-      *>
-           DISPLAY   MS1-MESSAGE-AREA UPON CONSOLE.
-           DISPLAY   MS2-MESSAGE-AREA UPON CONSOLE.
-           DISPLAY   MS3-MESSAGE-AREA UPON CONSOLE.
-      *>
-       TERM-PROC-EXIT.
+       INITIAL-PROC-EXIT.
       *>
            EXIT.
       *>----------------------------------------------------------------------------
       *>主処理
       *>----------------------------------------------------------------------------
        MAIN-PROC                          SECTION.
-      *>
-           PERFORM   INIT-PROC.
       *>
       *>  ファイルのオープン
            OPEN   INPUT    IN01-ZYUTYU-FILE
@@ -147,18 +130,23 @@
       *>
            EXIT.
       *>----------------------------------------------------------------------------
-      *>書き込み処理
+      *>終了処理
       *>----------------------------------------------------------------------------
-       WRITE-PROC                         SECTION.
+       FINAL-PROC                         SECTION.
       *>
-           MOVE    IN01-MISEBAN         TO   OT01-MISEBAN.
-           MOVE    IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU.
       *>
-           WRITE   OT01-RECODE.
+      *>入出力件数の表示
+           MOVE   CNT-IN01  TO DSP-IN01-CNT.
+           MOVE   CNT-OT01  TO DSP-OT01-CNT.
       *>
-           ADD     1                    TO   WRK-OUT-COUNT.
+           DISPLAY   MS1-DISPLAY-AREA  UPON CONSOLE.
+           DISPLAY   IN01-DISPLAY-AREA UPON CONSOLE.
+           DISPLAY   OT01-DISPLAY-AREA UPON CONSOLE.
       *>
-       WRITE-PROC-EXIT.
+      *>ファイルのクローズ
+           CLOSE   IN01-ZYUTYU-FILE
+                   OT01-ZYUTYU-FILE.
+       FINAL-PROC-EXIT.
       *>
            EXIT.
       *>----------------------------------------------------------------------------
@@ -171,9 +159,24 @@
                   DISPLAY "READ END"
       *>
             NOT   AT   END
-                  ADD   1   TO   WRK-IN-COUNT
+                  ADD   1   TO   CNT-IN01
            END-READ.
       *>
        ZYUTYU-FILE-READ-PROC-EXIT.
+      *>
+           EXIT.
+      *>----------------------------------------------------------------------------
+      *>書き込み処理
+      *>----------------------------------------------------------------------------
+       WRITE-PROC                         SECTION.
+      *>
+           MOVE    IN01-MISEBAN         TO   OT01-MISEBAN.
+           MOVE    IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU.
+      *>
+           WRITE   OT01-RECODE.
+      *>
+           ADD     1                    TO   CNT-OT01.
+      *>
+       WRITE-PROC-EXIT.
       *>
            EXIT.
