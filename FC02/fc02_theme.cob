@@ -116,15 +116,18 @@
                     MOVE "ED" TO IN-FILE-STATUS
       *>
                NOT   AT     END
-               *>
+      *>
                IF        IN01-RECODE = SPACE THEN
                          MOVE "END" TO IN-FILE-STATUS
-               *>
+      *>
                ELSE IF   IN01-RECODE >= 1 THEN
                          ADD    1      TO   CNT-IN01
       *>
            END-READ.
-       *>END-PERFORM.
+      *>
+       IN01-FILE-READ-PROC-EXIT.
+      *>
+           EXIT.
       *>************************************************************************
       *>印刷処理
       *>************************************************************************
