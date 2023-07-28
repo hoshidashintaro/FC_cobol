@@ -44,7 +44,7 @@
           03   OT01-ZYUTYU-BANGOU.
                 05   OT01-MISEBAN                   PIC X(003).
                 05   OT01-TYUMON-BANGOU             PIC 9(005).
-          03   OT01-ERR-MASSAGE-AREA                PIC X(050).
+          03   OT01-ERR-MASSAGE-AREA                PIC X(040).
       *>************************************************************************
       *>作業領域の定義
       *>************************************************************************
@@ -132,9 +132,9 @@
            DISPLAY   ERR-MESSAGE-AREA UPON CONSOLE
        ELSE
            MOVE   WRK-COUNT TO MSG3-COUNT
-           MOVE   ERR-COUNT TO MSGE-COUNT
+           *>MOVE   ERR-COUNT TO MSGE-COUNT
            DISPLAY   MS3-MESSAGE-AREA UPON CONSOLE
-           DISPLAY   ERR-MESSAGE-AREA UPON CONSOLE
+           *>DISPLAY   ERR-MESSAGE-AREA UPON CONSOLE
        END-IF.
       *>
        TERM-PROC-EXIT.
@@ -166,11 +166,15 @@
       *>
       *>      IN01-FILEにレコードがある場合
                ELSE IF IN01-RECODE >= 1 THEN
+               DISPLAY"IN01-MISEBAN:"IN01-MISEBAN
+               DISPLAY FUNCTION LENGTH(FUNCTION TRIM(IN01-MISEBAN))
+               DISPLAY"TRIM:" FUNCTION TRIM(IN01-MISEBAN)
       *>
       *>エラー判定の処理
       *>      IN01-MISEBANが文字列であるかを判定する
-       IF   IN01-MISEBAN = ZERO
-            OR   FUNCTION STORED-CHAR-LENGTH(IN01-MISEBAN) NOT = 3
+       IF   FUNCTION LENGTH(FUNCTION TRIM(IN01-MISEBAN)) NOT = 3
+            *>FUNCTION STORED-CHAR-LENGTH(IN01-MISEBAN) NOT = 3
+            OR   IN01-MISEBAN = SPACES
        THEN
             ADD   1   TO   ERR-COUNT
             DISPLAY"ERR-COUNT:"ERR-COUNT
@@ -180,14 +184,19 @@
            MOVE   ERR-SUM-COUNT TO MSGE-COUNT
            DISPLAY   ERR-MESSAGE-AREA UPON CONSOLE
       *>
+       MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
+       MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
        MOVE ERR-MESSAGE-AREA TO  OT01-ERR-MASSAGE-AREA
-       WRITE OT01-ERR-MASSAGE-AREA
+       WRITE OT01-RECODE
       *>
           STOP RUN
       *>      IN01-MISEBANが文字列であるかを判定する
        ELSE IF IN01-TYUMON-BANGOU = ZERO
             OR   IN01-TYUMON-BANGOU IS NOT NUMERIC
-            OR   FUNCTION STORED-CHAR-LENGTH(IN01-TYUMON-BANGOU) NOT = 5
+            OR   FUNCTION TRIM(IN01-TYUMON-BANGOU)
+             NOT = 5
+            AND (IN01-TYUMON-BANGOU = SPACE
+            OR IN01-TYUMON-BANGOU = ZERO)
             THEN
             ADD   1   TO   ERR-COUNT
           DISPLAY  "注文番号が不適切な値です"
@@ -199,6 +208,7 @@
       *>
                MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
                MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
+               MOVE      SPACE                TO   OT01-ERR-MASSAGE-AREA
                WRITE     OT01-RECODE
                      ADD   1   TO   WRK-COUNT
 
@@ -239,7 +249,7 @@
       *>
       *>             MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
       *>             MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
-                     *>MOVE  ERR-MESSAGE-AREA  TO OT01-ERR-MASSAGE-AREA
+      *>               MOVE  ERR-MESSAGE-AREA  TO OT01-ERR-MASSAGE-AREA
       *>             WRITE     OT01-RECODE
       *>             ADD   1   TO   WRK-COUNT
       *>
