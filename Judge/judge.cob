@@ -171,7 +171,7 @@
                DISPLAY"TRIM:" FUNCTION TRIM(IN01-MISEBAN)
       *>
       *>エラー判定の処理
-      *>      IN01-MISEBANが文字列であるかを判定する
+      *>   IN01-MISEBANが文字列であるかを判定する
        IF   FUNCTION LENGTH(FUNCTION TRIM(IN01-MISEBAN)) NOT = 3
             *>FUNCTION STORED-CHAR-LENGTH(IN01-MISEBAN) NOT = 3
             OR   IN01-MISEBAN = SPACES
@@ -179,6 +179,10 @@
             ADD   1   TO   ERR-COUNT
             DISPLAY"ERR-COUNT:"ERR-COUNT
           DISPLAY  "店番が不適切な値です"
+      *>
+      *> ERR-COUNTが入った場合は
+      *> 読み込んだ分のWRK-COUNTに加算して
+      *> 何件目にエラーが出たかを表示する
           IF ERR-COUNT = 1 THEN
           COMPUTE   ERR-SUM-COUNT   =   ERR-COUNT + WRK-COUNT
            MOVE   ERR-SUM-COUNT TO MSGE-COUNT
@@ -190,6 +194,7 @@
        WRITE OT01-RECODE
       *>
           STOP RUN
+      *>
       *>      IN01-MISEBANが文字列であるかを判定する
        ELSE IF IN01-TYUMON-BANGOU = ZERO
             OR   IN01-TYUMON-BANGOU IS NOT NUMERIC
@@ -200,17 +205,31 @@
             THEN
             ADD   1   TO   ERR-COUNT
           DISPLAY  "注文番号が不適切な値です"
+                *> ERR-COUNTが入った場合は
+      *> 読み込んだ分のWRK-COUNTに加算して
+      *> 何件目にエラーが出たかを表示する
+          IF ERR-COUNT = 1 THEN
+          COMPUTE   ERR-SUM-COUNT   =   ERR-COUNT + WRK-COUNT
+           MOVE   ERR-SUM-COUNT TO MSGE-COUNT
+           DISPLAY   ERR-MESSAGE-AREA UPON CONSOLE
+      *>
+       MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
+       MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
+       MOVE ERR-MESSAGE-AREA TO  OT01-ERR-MASSAGE-AREA
+       WRITE OT01-RECODE
           STOP RUN
+      *>
+          *>ELSE
+               *>MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
+               *>MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
+               *>MOVE      SPACE                TO   OT01-ERR-MASSAGE-AREA
+               *>WRITE     OT01-RECODE
+                     *>ADD   1   TO   WRK-COUNT
           END-IF
        END-IF
        END-IF
           *>STOP RUN
       *>
-               MOVE      IN01-MISEBAN         TO   OT01-MISEBAN
-               MOVE      IN01-TYUMON-BANGOU   TO   OT01-TYUMON-BANGOU
-               MOVE      SPACE                TO   OT01-ERR-MASSAGE-AREA
-               WRITE     OT01-RECODE
-                     ADD   1   TO   WRK-COUNT
 
            END-READ
        END-PERFORM.
