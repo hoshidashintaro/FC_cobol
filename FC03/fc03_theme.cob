@@ -108,7 +108,7 @@
                   OUTPUT   OT01-ZYUTYU-FILE.
       *>
       *>  受注ファイルの読み込み
-        PERFORM UNTIL IN-FILE-STATUS  = "ED"
+           PERFORM UNTIL IN-FILE-STATUS  = "ED"
       *>
            IF     IN01-MISEBAN  =  "T01"   THEN
       *>
@@ -132,7 +132,7 @@
       *>----------------------------------------------------------------------------
        FINAL-PROC                         SECTION.
       *>
-      *>入出力件数の表示
+      *>  入出力件数の表示
            MOVE   CNT-IN01  TO DSP-IN01-CNT.
            MOVE   CNT-OT01  TO DSP-OT01-CNT.
       *>
@@ -140,9 +140,10 @@
            DISPLAY   IN01-DISPLAY-AREA UPON CONSOLE.
            DISPLAY   OT01-DISPLAY-AREA UPON CONSOLE.
       *>
-      *>ファイルのクローズ
+      *>  ファイルのクローズ
            CLOSE   IN01-ZYUTYU-FILE
                    OT01-ZYUTYU-FILE.
+      *>
        FINAL-PROC-EXIT.
       *>
            EXIT.
