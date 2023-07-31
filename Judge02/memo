@@ -1,0 +1,5 @@
+            *>OR   IN01-TYUMON-BANGOU IS NOT NUMERIC
+            *>OR   FUNCTION TRIM(IN01-TYUMON-BANGOU)
+            *> NOT = 5
+            *>AND (IN01-TYUMON-BANGOU = SPACE
+            *>OR IN01-TYUMON-BANGOU = ZERO)
