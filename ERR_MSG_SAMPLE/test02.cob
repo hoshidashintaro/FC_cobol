@@ -122,9 +122,8 @@
                 DISPLAY   "READ END"
       *>   読み込んだファイルが0件だった場合ファイルを閉じて終了する。
                 IF     WK-DATA-COUNT   =  0
-                    MOVE   WK-DATA-COUNT
-                    *>"件を読み込み"
-                    TO  OT01-ERR-MESSAGE
+                    MOVE   WK-DATA-COUNT"件のデータを読み込みました。"
+                                             TO  OT01-ERR-MESSAGE
                     WRITE     OT01-ERRCODE
                     PERFORM   TERM-PROC
                 END-IF
@@ -172,10 +171,9 @@
       *>   エラーチェックでフラグが立った場合
                IF   WK-ERR-FLG     NOT  =  0
       *>   エラーメッセージにファイル件数とエラーコードを挿入
-                    MOVE
-                    *>WK-ERR-COUNT
-                    *>"プログラムを終了コード:"
-                    WK-ERR-FLG  TO  OT01-ERR-MESSAGE
+                    MOVE  WK-ERR-COUNT "件目のファイルにエラーがある為、
+                    プログラムを終了致します。エラーコード:" WK-ERR-FLG
+                                           TO  OT01-ERR-MESSAGE
       *>   前回ファイル出力をしているか確認
       *>   フラグに1が立っていた場合Write処理
                     IF   WK-WRITE-FLG   =  1
@@ -225,7 +223,7 @@
       *>-----------------------------------------------------------------------
       *>エラーチェック処理
       *>-----------------------------------------------------------------------
-       ERR-CHK-PROC  SECTION.
+       ERR-CHK-PROC
       *>
       *>   店番
        IF  IN01-MISEBAN         =   SPACE
@@ -276,7 +274,7 @@
            MOVE      8     TO  WK-ERR-FLG
            END-IF.
       *>   担当者番号
-       IF  IN01-TANTOSYA-BANGOU   =   SPACE
+       IF  IN01-TANTOU-BANGOU   =   SPACE
            DISPLAY   "担当者番号エラー"
       *>   エラー時にフラグを立てる
            MOVE      9     TO  WK-ERR-FLG
